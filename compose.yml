@@ -8,3 +8,10 @@ services:
     ports:
       - "3000:3000"
     command: yarn dev --host
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    command: yarn start:dev
