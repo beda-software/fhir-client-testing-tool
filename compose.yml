@@ -1,18 +1,9 @@
 version: '3.8'
 
 services:
-  frontend:
+  app:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    command: yarn dev --host
-    depends_on:
-      - backend
-  backend:
-    build:
-      context: ./backend
+      context: ./app
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
