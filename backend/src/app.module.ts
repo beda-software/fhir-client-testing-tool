@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RequestModule } from './modules/requests/request.module';
 import { SessionModule } from './modules/sessions/session.module';
+import { ResponseModule } from './modules/responses/response.module';
 
 @Module({
   imports: [
@@ -15,8 +16,9 @@ import { SessionModule } from './modules/sessions/session.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    RequestModule,
     SessionModule,
+    RequestModule,
+    ResponseModule,
   ],
 })
 export class AppModule {}

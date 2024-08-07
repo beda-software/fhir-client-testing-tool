@@ -7,8 +7,8 @@ import {
 
 @Entity({ name: 'responses' })
 export class Response {
-  @PrimaryGeneratedColumn({ name: 'response_id' })
-  responseId: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ name: 'request_id', nullable: false })
   requestId: number;
