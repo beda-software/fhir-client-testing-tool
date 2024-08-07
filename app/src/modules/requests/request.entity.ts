@@ -7,7 +7,7 @@ import {
 
 @Entity()
 export class Request {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ type: 'text' })

@@ -7,13 +7,13 @@ import {
 
 @Entity()
 export class Session {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   first_request_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   last_request_id: number;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

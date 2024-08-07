@@ -648,6 +648,11 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
+"@medplum/core@^3.2.4":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@medplum/core/-/core-3.2.4.tgz#ace35f7dc8068a8d758b4162ee84ebc351b9910b"
+  integrity sha512-8JFFxnVMg1q/gatwy7MSO3NtpjxFizvT7x6tNRKS8LhWfnoEAPiMv97jVOxs59AxrbkdvXdD7ewGUFJpz/9JuA==
+
 "@microsoft/tsdoc@^0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.15.0.tgz#f29a55df17cb6e87cfbabce33ff6a14a9f85076d"

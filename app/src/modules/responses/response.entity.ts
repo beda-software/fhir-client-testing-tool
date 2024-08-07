@@ -7,7 +7,7 @@ import {
 
 @Entity({ name: 'responses' })
 export class Response {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ name: 'request_id' })
