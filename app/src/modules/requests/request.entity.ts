@@ -10,25 +10,25 @@ export class Request {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   request_method: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   fhir_action: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   request_uri: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   remote_addr: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   user_agent: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   headers: string;
 
-  @CreateDateColumn({ type: 'datetime', default: () => "datetime('now')" })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dt: Date;
 
   @Column({ type: 'text', nullable: true })

@@ -16,6 +16,6 @@ export class Session {
   @Column()
   last_request_id: number;
 
-  @CreateDateColumn({ type: 'datetime', default: () => "datetime('now')" })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dt: Date;
 }

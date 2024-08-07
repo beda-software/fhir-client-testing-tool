@@ -10,16 +10,16 @@ export class Response {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'request_id', nullable: false })
+  @Column({ name: 'request_id' })
   requestId: number;
 
-  @Column({ name: 'status', nullable: false })
+  @Column({ name: 'status' })
   status: string;
 
-  @Column({ name: 'headers', nullable: false })
+  @Column({ name: 'headers' })
   headers: string;
 
-  @CreateDateColumn({ type: 'datetime', default: () => "datetime('now')" })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dt: Date;
 
   @Column({ name: 'data', nullable: true })
