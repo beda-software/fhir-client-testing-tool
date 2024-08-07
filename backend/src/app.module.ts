@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RequestModule } from './modules/requests/request.module';
+import { SessionModule } from './modules/sessions/session.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { RequestModule } from './modules/requests/request.module';
       synchronize: true,
     }),
     RequestModule,
+    SessionModule,
   ],
 })
 export class AppModule {}

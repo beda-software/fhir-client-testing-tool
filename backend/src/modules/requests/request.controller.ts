@@ -8,8 +8,8 @@ export class RequestController {
   constructor(private readonly requestService: RequestService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateRequestDto): Promise<Request> {
-    return this.requestService.create(createUserDto);
+  create(@Body() createRequestDto: CreateRequestDto): Promise<Request> {
+    return this.requestService.create(createRequestDto);
   }
 
   @Get()
