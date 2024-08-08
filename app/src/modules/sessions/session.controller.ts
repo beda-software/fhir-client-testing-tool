@@ -5,7 +5,6 @@ import { CreateSessionDto } from './session.dto';
 import { parseSearchRequest } from '@medplum/core';
 import { RequestService } from '../requests/request.service';
 import { ResponseService } from '../responses/response.service';
-import { stringify } from 'flatted';
 
 @Controller('sessions')
 export class SessionController {
@@ -52,14 +51,40 @@ export class SessionController {
   ) {
     const proxyMiddleware = await this.sessionService.getProxyMiddleware(id);
     const target = await this.sessionService.getTarget(id);
+    const searchRequest = req.originalUrl.replace(`/sessions/${id}`, target);
+    const {
+      resourceType,
+      offset,
+      count,
+      fields,
+      total,
+      summary,
+      format,
+      include,
+      revInclude,
+      sortRules,
+      filters,
+    } = parseSearchRequest(searchRequest);
+
     const request = await this.requestService.create({
       request_method: 'GET',
       fhir_action: 'search',
-      request_uri: req.originalUrl.replace(`/sessions/${id}`, target),
+      request_uri: searchRequest,
       remote_addr: req.ip,
       user_agent: req.headers['user-agent'],
       headers: JSON.stringify(req.headers),
       data: '',
+      resource_type: resourceType,
+      offset: String(offset),
+      count: String(count),
+      fields: String(fields),
+      total: total,
+      summary: summary,
+      format: format,
+      include: String(include),
+      revinclude: String(revInclude),
+      sort_rules: String(sortRules),
+      filters: String(filters),
     });
     await this.responseService.create({
       requestId: request.id,
@@ -67,8 +92,6 @@ export class SessionController {
       headers: JSON.stringify(req.headers),
       data: '',
     });
-    console.log('req.rawBody', req.rawBody);
-    console.log('res.rawBody', res.responseBuffer);
     proxyMiddleware(req, res);
   }
 }

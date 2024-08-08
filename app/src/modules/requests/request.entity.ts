@@ -33,4 +33,37 @@ export class Request {
 
   @Column({ type: 'text', nullable: true })
   data: string;
+
+  @Column({ type: 'text' })
+  resource_type: string;
+
+  @Column({ type: 'text', nullable: true })
+  offset: string;
+
+  @Column({ type: 'text', nullable: true })
+  count: string;
+
+  @Column({ type: 'text', nullable: true })
+  fields: string;
+
+  @Column({ type: 'text', nullable: true })
+  total: string;
+
+  @Column({ type: 'text', nullable: true })
+  summary: string;
+
+  @Column({ type: 'text', nullable: true })
+  format: string;
+
+  @Column({ type: 'text', nullable: true })
+  include: string;
+
+  @Column({ type: 'text', nullable: true })
+  revinclude: string;
+
+  @Column({ type: 'text', nullable: true })
+  sort_rules: string;
+
+  @Column({ type: 'text', nullable: true })
+  filters: string;
 }
