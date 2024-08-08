@@ -18,7 +18,7 @@ export class RequestController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Request> {
+  findOne(@Param('id') id: string): Promise<Request> {
     return this.requestService.findOne(id);
   }
 }

@@ -8,7 +8,7 @@ import {
 @Entity()
 export class Request {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'text' })
   request_method: string;

@@ -20,7 +20,7 @@ export class ResponseService {
     return this.responseRepository.find();
   }
 
-  async findOne(id: number): Promise<Response> {
+  async findOne(id: string): Promise<Response> {
     const response = await this.responseRepository.findOne({ where: { id } });
     if (!response) {
       throw new NotFoundException(`Response with ID ${id} not found`);

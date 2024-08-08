@@ -1,5 +1,5 @@
 export class CreateResponseDto {
-  requestId: number;
+  requestId: string;
   status: string;
   headers: string;
   data: string;

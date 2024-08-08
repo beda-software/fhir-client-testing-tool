@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Session } from './session.entity';
 import { CreateSessionDto } from './session.dto';
+import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
 
 @Injectable()
 export class SessionService {
@@ -20,11 +21,38 @@ export class SessionService {
     return this.sessionRepository.find();
   }
 
-  async findOne(id: number): Promise<Session> {
+  async findOne(id: string): Promise<Session> {
     const session = await this.sessionRepository.findOne({ where: { id } });
     if (!session) {
       throw new NotFoundException(`Session with ID ${id} not found`);
     }
     return session;
+  }
+
+  async getTarget(id: string): Promise<Session['target']> {
+    const session = await this.sessionRepository.findOne({ where: { id } });
+    if (!session) {
+      throw new NotFoundException(`Session with ID ${id} not found`);
+    }
+    return session.target;
+  }
+
+  async getProxyMiddleware(id: string) {
+    const target = await this.getTarget(id);
+    return createProxyMiddleware({
+      target,
+      changeOrigin: true,
+      pathRewrite: { [`^/sessions/${id}`]: '' },
+      // on: {
+      //   proxyRes: responseInterceptor(
+      //     async (responseBuffer, proxyRes, req, res) => {
+      //       const response = responseBuffer.toString('utf8');
+      //       console.log(response); // log response body
+
+      //       return responseBuffer;
+      //     },
+      //   ),
+      // },
+    });
   }
 }

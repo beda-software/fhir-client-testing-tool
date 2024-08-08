@@ -20,7 +20,7 @@ export class RequestService {
     return this.requestRepository.find();
   }
 
-  async findOne(id: number): Promise<Request> {
+  async findOne(id: string): Promise<Request> {
     const request = await this.requestRepository.findOne({ where: { id } });
     if (!request) {
       throw new NotFoundException(`Request with ID ${id} not found`);

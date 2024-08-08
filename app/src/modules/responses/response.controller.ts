@@ -18,7 +18,7 @@ export class ResponseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Response> {
+  findOne(@Param('id') id: string): Promise<Response> {
     return this.responseService.findOne(id);
   }
 }

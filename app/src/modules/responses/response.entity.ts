@@ -8,10 +8,10 @@ import {
 @Entity({ name: 'responses' })
 export class Response {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ name: 'request_id' })
-  requestId: number;
+  requestId: string;
 
   @Column({ name: 'status' })
   status: string;

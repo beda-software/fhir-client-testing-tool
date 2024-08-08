@@ -8,7 +8,10 @@ import {
 @Entity()
 export class Session {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
+
+  @Column({ nullable: false })
+  target: string;
 
   @Column({ nullable: true })
   first_request_id: number;

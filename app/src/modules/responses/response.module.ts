@@ -8,5 +8,6 @@ import { ResponseController } from './response.controller';
   imports: [TypeOrmModule.forFeature([Response])],
   providers: [ResponseService],
   controllers: [ResponseController],
+  exports: [ResponseService],
 })
 export class ResponseModule {}
