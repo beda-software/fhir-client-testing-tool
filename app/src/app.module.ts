@@ -15,6 +15,7 @@ import { ResponseModule } from './modules/responses/response.module';
       database: 'mydatabase',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      autoLoadEntities: true,
     }),
     SessionModule,
     RequestModule,

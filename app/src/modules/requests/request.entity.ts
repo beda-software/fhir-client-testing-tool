@@ -66,4 +66,7 @@ export class Request {
 
   @Column({ type: 'text', nullable: true })
   filters: string;
+
+  @Column({ type: 'text' })
+  session_id: string;
 }

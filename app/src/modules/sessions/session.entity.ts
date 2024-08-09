@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Request } from '../requests/request.entity';
 
 @Entity()
 export class Session {
@@ -21,4 +23,7 @@ export class Session {
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   dt: Date;
+
+  @OneToMany(() => Request, (request) => request.session_id)
+  requests: Request[];
 }

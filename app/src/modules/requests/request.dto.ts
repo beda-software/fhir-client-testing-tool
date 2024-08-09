@@ -1,4 +1,5 @@
 export class CreateRequestDto {
+  session_id: string;
   request_method: string;
   fhir_action: string;
   request_uri: string;
