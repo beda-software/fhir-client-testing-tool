@@ -69,4 +69,10 @@ export class Request {
 
   @Column({ type: 'text' })
   session_id: string;
+
+  @Column({ name: 'status' })
+  status: string;
+
+  @Column({ name: 'response_data', nullable: true })
+  response_data: string;
 }

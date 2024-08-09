@@ -16,8 +16,8 @@ export class RequestService {
     return this.requestRepository.save(request);
   }
 
-  async findAll(): Promise<Request[]> {
-    return this.requestRepository.find();
+  async findAll(params: any): Promise<Request[]> {
+    return this.requestRepository.find(params);
   }
 
   async findOne(id: string): Promise<Request> {

@@ -18,4 +18,6 @@ export class CreateRequestDto {
   revinclude?: string;
   sort_rules?: string;
   filters?: string;
+  status: string;
+  response_data?: string;
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { RequestService } from './request.service';
 import { Request } from './request.entity';
 import { CreateRequestDto } from './request.dto';
@@ -13,8 +13,8 @@ export class RequestController {
   }
 
   @Get()
-  findAll(): Promise<Request[]> {
-    return this.requestService.findAll();
+  findAll(@Query('session') session: string): Promise<Request[]> {
+    return this.requestService.findAll({ where: [{ session_id: session }] });
   }
 
   @Get(':id')

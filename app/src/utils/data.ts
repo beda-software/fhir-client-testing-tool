@@ -2,7 +2,13 @@ import { parseSearchRequest } from '@medplum/core';
 import { Request, Response } from 'express';
 import { Request as RequestEntity } from '../modules/requests/request.entity';
 
-export function createRequestObject(id: string, target: string, req: Request) {
+export function createRequestObject(
+  id: string,
+  target: string,
+  req: Request,
+  res: Response,
+  responseBody: string,
+) {
   const searchRequest = req.originalUrl.replace(`/sessions/${id}`, target);
   const searchReqObj = parseSearchRequest(searchRequest);
   return {
@@ -25,6 +31,8 @@ export function createRequestObject(id: string, target: string, req: Request) {
     revinclude: JSON.stringify(searchReqObj.revInclude),
     sort_rules: JSON.stringify(searchReqObj.sortRules),
     filters: JSON.stringify(searchReqObj.filters),
+    status: String(res.statusCode),
+    response_data: responseBody,
   };
 }
 

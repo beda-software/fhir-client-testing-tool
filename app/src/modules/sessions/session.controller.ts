@@ -36,12 +36,8 @@ export class SessionController {
     const responseBody = await responsePromise;
     const target = await this.sessionService.getTarget(id);
 
-    const request = await this.requestService.create(
-      createRequestObject(id, target, req),
-    );
-
-    await this.responseService.create(
-      createResponseObject(request, res, responseBody),
+    await this.requestService.create(
+      createRequestObject(id, target, req, res, responseBody),
     );
   }
 }
