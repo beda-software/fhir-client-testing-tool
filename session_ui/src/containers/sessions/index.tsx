@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useSessionDetails } from "./hooks"
 import { Button, notification, Table, Tabs, TabsProps } from "antd";
 import { config } from "../../config";
+import { RequestDetails } from "../../components/RequestDetails";
 
 export function Sessions() {
     const { sessionId } = useParams();
@@ -11,7 +12,7 @@ export function Sessions() {
     const dataSource = requests?.map((request, index) => {
         return {
             key: index,
-            status: '200',
+            status: request.status,
             uri: request.requestUri,
             method: request.requestMethod,
             dt: request.dt,
@@ -46,18 +47,18 @@ export function Sessions() {
 
     return (
         <div>
-            {dataSource && dataSource?.length > 0 ? <Table dataSource={dataSource} columns={columns} expandable={{
+            {dataSource && dataSource?.length > 0 ? <Table style={{ width: '100%' }} dataSource={dataSource} columns={columns} expandable={{
                 expandedRowRender: (record) => {
                     const items: TabsProps['items'] = [
                         {
                             key: '1',
                             label: 'Request details',
-                            children: <pre>{JSON.stringify(record.entity, null, 2)}</pre>,
+                            children: <RequestDetails request={record.entity} />,
                         },
                         {
                             key: '2',
                             label: 'Response body',
-                            children: <pre>{JSON.stringify(JSON.parse(record.entity.responseData), null, 2)}</pre>,
+                            children: <pre>{JSON.stringify(record.entity.responseData, null, 2)}</pre>,
                         }
                     ];
 
