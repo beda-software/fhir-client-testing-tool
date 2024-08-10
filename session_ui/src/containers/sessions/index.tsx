@@ -12,8 +12,8 @@ export function Sessions() {
         return {
             key: index,
             status: '200',
-            uri: request.request_uri,
-            method: request.request_method,
+            uri: request.requestUri,
+            method: request.requestMethod,
             dt: request.dt,
             entity: request,
         }
@@ -57,7 +57,7 @@ export function Sessions() {
                         {
                             key: '2',
                             label: 'Response body',
-                            children: <pre>{JSON.stringify(JSON.parse(record.entity.response_data), null, 2)}</pre>,
+                            children: <pre>{JSON.stringify(JSON.parse(record.entity.responseData), null, 2)}</pre>,
                         }
                     ];
 
@@ -65,7 +65,7 @@ export function Sessions() {
                 }
             }} /> : <><h1>Available URL to use</h1><h2>{availableSessionUrl}</h2><Button type="primary" onClick={() => {
                 copyToClipboard(availableSessionUrl)
-                notification.success({ message: 'Link copied to clickboard' })
+                notification.success({ message: 'Link copied to clipboard' })
             }}>Copy</Button></>}
         </div>
     );

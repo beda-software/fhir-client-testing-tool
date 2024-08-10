@@ -1,3 +1,3 @@
 export const config = {
-    backendUrl: 'https://b75c-62-4-44-236.ngrok-free.app'
+    backendUrl: 'https://9c39-62-4-44-236.ngrok-free.app'
 }

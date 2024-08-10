@@ -1,14 +1,14 @@
 export interface Request {
     id: string;
-    request_method: string;
-    fhir_action: string;
-    request_uri: string;
-    remote_addr: string;
-    user_agent: string;
+    requestMethod: string;
+    fhirAction: string;
+    requestUri: string;
+    remoteAddr: string;
+    userAgent: string;
     headers: string;
     dt: Date;
     data: string;
-    resource_type: string;
+    resourceType: string;
     offset: string;
     count: string;
     fields: string;
@@ -16,10 +16,10 @@ export interface Request {
     summary: string;
     format: string;
     include: string;
-    revinclude: string;
-    sort_rules: string;
+    revInclude: string;
+    sortRules: string;
     filters: string;
-    session_id: string;
+    sessionId: string;
     status: string;
-    response_data: string;
+    responseData: string;
 }
