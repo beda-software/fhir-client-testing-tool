@@ -14,7 +14,10 @@ export class RequestController {
 
   @Get()
   findAll(@Query('session') session: string): Promise<Request[]> {
-    return this.requestService.findAll({ where: [{ session_id: session }] });
+    return this.requestService.findAll({
+      where: { session: { id: session } },
+      relations: ['session'],
+    });
   }
 
   @Get(':id')

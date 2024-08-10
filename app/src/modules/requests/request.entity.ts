@@ -1,41 +1,44 @@
+import { Response, Request as RequestType } from 'express';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Session } from '../sessions/session.entity';
 
 @Entity()
 export class Request {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text' })
-  request_method: string;
+  @ManyToOne(() => Session, (session) => session.requests)
+  session: Session;
 
   @Column({ type: 'text' })
-  fhir_action: string;
+  requestMethod: RequestType['method'];
 
   @Column({ type: 'text' })
-  request_uri: string;
+  fhirAction: string;
 
   @Column({ type: 'text' })
-  remote_addr: string;
+  requestUri: string;
 
   @Column({ type: 'text' })
-  user_agent: string;
+  remoteAddr: string;
+
+  @Column({ type: 'text' })
+  userAgent: string;
 
   @Column({ type: 'text' })
   headers: string;
-
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  dt: Date;
 
   @Column({ type: 'text', nullable: true })
   data: string;
 
   @Column({ type: 'text' })
-  resource_type: string;
+  resourceType: string;
 
   @Column({ type: 'text', nullable: true })
   offset: string;
@@ -59,20 +62,20 @@ export class Request {
   include: string;
 
   @Column({ type: 'text', nullable: true })
-  revinclude: string;
+  revInclude: string;
 
   @Column({ type: 'text', nullable: true })
-  sort_rules: string;
+  sortRules: string;
 
   @Column({ type: 'text', nullable: true })
   filters: string;
 
-  @Column({ type: 'text' })
-  session_id: string;
+  @Column({ name: 'status', type: 'smallint' })
+  status: Response['statusCode'];
 
-  @Column({ name: 'status' })
-  status: string;
+  @Column({ type: 'jsonb', name: 'responseData', nullable: true })
+  responseData: Record<string, any>;
 
-  @Column({ name: 'response_data', nullable: true })
-  response_data: string;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  dt: Date;
 }

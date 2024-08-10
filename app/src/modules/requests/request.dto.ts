@@ -1,23 +1,26 @@
+import { Request as RequestType, Response } from 'express';
+import { Session } from '../sessions/session.entity';
+
 export class CreateRequestDto {
-  session_id: string;
-  request_method: string;
-  fhir_action: string;
-  request_uri: string;
-  remote_addr: string;
-  user_agent: string;
+  session: Session;
+  requestMethod: RequestType['method'];
+  fhirAction: string;
+  requestUri: string;
+  remoteAddr: string;
+  userAgent: string;
   headers: string;
-  data?: string;
-  resource_type: string;
-  offset?: string;
-  count?: string;
-  fields?: string;
-  total?: string;
-  summary?: string;
-  format?: string;
-  include?: string;
-  revinclude?: string;
-  sort_rules?: string;
-  filters?: string;
-  status: string;
-  response_data?: string;
+  data: string;
+  resourceType: string;
+  offset: string;
+  count: string;
+  fields: string;
+  total: string;
+  summary: string;
+  format: string;
+  include: string;
+  revInclude: string;
+  sortRules: string;
+  filters: string;
+  status: Response['statusCode'];
+  responseData: Record<string, any>;
 }

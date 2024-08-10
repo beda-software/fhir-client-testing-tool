@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Param, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Param, Req, Res, All } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { Session } from './session.entity';
 import { CreateSessionDto } from './session.dto';
 import { RequestService } from '../requests/request.service';
-import { ResponseService } from '../responses/response.service';
 import { Request, Response } from 'express';
-import { createRequestObject, createResponseObject } from 'src/utils/data';
+import { createRequestObject } from 'src/utils/data';
 import { captureResponseBody } from 'src/utils/responses';
 
 @Controller('sessions')
@@ -13,7 +12,6 @@ export class SessionController {
   constructor(
     private readonly sessionService: SessionService,
     private readonly requestService: RequestService,
-    private readonly responseService: ResponseService,
   ) {}
 
   @Post()
@@ -21,13 +19,13 @@ export class SessionController {
     return this.sessionService.create(createSessionDto);
   }
 
-  @Get(':id/**')
-  @Post(':id/**')
+  @All(':id/**')
   async proxyRequestGet(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    const session = await this.sessionService.findOne(id);
     const proxyMiddleware = await this.sessionService.getProxyMiddleware(id);
     const responsePromise = captureResponseBody(res);
 
@@ -37,7 +35,7 @@ export class SessionController {
     const target = await this.sessionService.getTarget(id);
 
     await this.requestService.create(
-      createRequestObject(id, target, req, res, responseBody),
+      createRequestObject(id, target, session, req, res, responseBody),
     );
   }
 }
