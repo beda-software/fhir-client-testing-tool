@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Session } from './session.entity';
 import { CreateSessionDto } from './session.dto';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 @Injectable()
 export class SessionService {
@@ -43,6 +43,9 @@ export class SessionService {
       target,
       changeOrigin: true,
       pathRewrite: { [`^/sessions/${id}`]: '' },
+      on: {
+        proxyReq: fixRequestBody,
+      },
     });
   }
 }
