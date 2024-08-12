@@ -20,7 +20,7 @@ export function createRequestObject(
     requestUri: searchRequest,
     remoteAddr: req.ip ?? '',
     userAgent: req.headers['user-agent'],
-    headers: JSON.stringify(req.headers),
+    headers: req.headers,
     data: '',
     resourceType: searchReqObj.resourceType,
     offset: String(searchReqObj.offset),
@@ -32,8 +32,8 @@ export function createRequestObject(
     include: JSON.stringify(searchReqObj.include),
     revInclude: JSON.stringify(searchReqObj.revInclude),
     sortRules: JSON.stringify(searchReqObj.sortRules),
-    filters: JSON.stringify(searchReqObj.filters),
+    filters: searchReqObj.filters,
     status: res.statusCode,
-    responseData: JSON.parse(responseBody),
+    responseBody: JSON.parse(responseBody),
   };
 }

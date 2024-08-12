@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Req, Res, All, Query } from '@nestjs/common';
+import { Controller, Post, Body, Param, Req, Res, All } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { SessionService } from './session.service';
 import { Session } from './session.entity';

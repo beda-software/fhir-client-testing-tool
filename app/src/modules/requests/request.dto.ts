@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Request as RequestType, Response } from 'express';
 import { Session } from '../sessions/session.entity';
+import { jsonbType } from 'src/utils/types';
 
 export class CreateRequestDto {
   @ApiProperty({ description: 'Session associated with the request' })
@@ -22,7 +23,7 @@ export class CreateRequestDto {
   userAgent: string;
 
   @ApiProperty({ description: 'Headers of the request' })
-  headers: string;
+  headers: jsonbType;
 
   @ApiProperty({ description: 'Data payload of the request' })
   data: string;
@@ -58,11 +59,11 @@ export class CreateRequestDto {
   sortRules: string;
 
   @ApiProperty({ description: 'Filters applied to the request' })
-  filters: string;
+  filters: jsonbType;
 
   @ApiProperty({ description: 'HTTP status code of the response' })
   status: Response['statusCode'];
 
   @ApiProperty({ description: 'Data payload of the response', type: Object })
-  responseData: Record<string, any>;
+  responseBody: jsonbType;
 }

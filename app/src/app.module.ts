@@ -7,7 +7,7 @@ import { SessionModule } from './modules/sessions/session.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db',
+      host: 'postgres',
       port: 5432,
       username: 'myuser',
       password: 'mypassword',
