@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Param, Req, Res, All } from '@nestjs/common';
+import { Controller, Post, Body, Param, Req, Res, All, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { SessionService } from './session.service';
 import { Session } from './session.entity';
 import { CreateSessionDto } from './session.dto';
@@ -7,6 +8,7 @@ import { Request, Response } from 'express';
 import { createRequestObject } from 'src/utils/data';
 import { captureResponseBody } from 'src/utils/responses';
 
+@ApiTags('sessions')
 @Controller('sessions')
 export class SessionController {
   constructor(
@@ -15,11 +17,14 @@ export class SessionController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new session' })
   create(@Body() createSessionDto: CreateSessionDto): Promise<Session> {
     return this.sessionService.create(createSessionDto);
   }
 
   @All(':id/**')
+  @ApiOperation({ summary: 'Proxy request to the target URL' })
+  @ApiParam({ name: 'id', description: 'Session ID' })
   async proxyRequestGet(
     @Param('id') id: string,
     @Req() req: Request,
