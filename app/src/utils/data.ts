@@ -2,6 +2,7 @@ import { parseSearchRequest } from '@medplum/core';
 import { Request, Response } from 'express';
 import { CreateRequestDto } from 'src/modules/requests/request.dto';
 import { Session } from 'src/modules/sessions/session.entity';
+import { getFHIRAction } from './helpers';
 
 export function createRequestObject(
   id: string,
@@ -15,8 +16,8 @@ export function createRequestObject(
   const searchReqObj = parseSearchRequest(searchRequest);
   return {
     session: session,
-    requestMethod: 'GET',
-    fhirAction: 'search',
+    requestMethod: req.method,
+    fhirAction: getFHIRAction(req.method, searchRequest),
     requestUri: searchRequest,
     remoteAddr: req.ip ?? '',
     userAgent: req.headers['user-agent'],
