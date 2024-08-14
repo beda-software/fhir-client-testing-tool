@@ -11,36 +11,30 @@ import { captureResponseBody } from 'src/utils/responses';
 @ApiTags('sessions')
 @Controller('sessions')
 export class SessionController {
-  constructor(
-    private readonly sessionService: SessionService,
-    private readonly requestService: RequestService,
-  ) {}
+    constructor(
+        private readonly sessionService: SessionService,
+        private readonly requestService: RequestService,
+    ) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new session' })
-  create(@Body() createSessionDto: CreateSessionDto): Promise<Session> {
-    return this.sessionService.create(createSessionDto);
-  }
+    @Post()
+    @ApiOperation({ summary: 'Create a new session' })
+    create(@Body() createSessionDto: CreateSessionDto): Promise<Session> {
+        return this.sessionService.create(createSessionDto);
+    }
 
-  @All(':id/**')
-  @ApiOperation({ summary: 'Proxy request to the target URL' })
-  @ApiParam({ name: 'id', description: 'Session ID' })
-  async proxyRequestGet(
-    @Param('id') id: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    const session = await this.sessionService.findOne(id);
-    const proxyMiddleware = await this.sessionService.getProxyMiddleware(id);
-    const responsePromise = captureResponseBody(res);
+    @All(':id/**')
+    @ApiOperation({ summary: 'Proxy request to the target URL' })
+    @ApiParam({ name: 'id', description: 'Session ID' })
+    async proxyRequestGet(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
+        const session = await this.sessionService.findOne(id);
+        const proxyMiddleware = await this.sessionService.getProxyMiddleware(id);
+        const responsePromise = captureResponseBody(res);
 
-    proxyMiddleware(req, res);
+        proxyMiddleware(req, res);
 
-    const responseBody = await responsePromise;
-    const target = await this.sessionService.getTarget(id);
+        const responseBody = await responsePromise;
+        const target = await this.sessionService.getTarget(id);
 
-    await this.requestService.create(
-      createRequestObject(id, target, session, req, res, responseBody),
-    );
-  }
+        await this.requestService.create(createRequestObject(id, target, session, req, res, responseBody));
+    }
 }
