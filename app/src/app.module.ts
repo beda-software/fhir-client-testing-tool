@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RequestModule } from './modules/requests/request.module';
 import { SessionModule } from './modules/sessions/session.module';
+import { TestModule } from './modules/tests/test.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { SessionModule } from './modules/sessions/session.module';
         }),
         SessionModule,
         RequestModule,
+        TestModule,
     ],
 })
 export class AppModule {}

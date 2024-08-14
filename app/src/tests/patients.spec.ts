@@ -62,15 +62,16 @@ function checkAvailableParams(availableParams: string[], combo: boolean, request
 }
 
 describe('Patients test', () => {
+    // NOTE: WIP
+    const sessionId = process.env.SESSION_ID;
     test.each([
         [patientRequestsOnlyAvailableInteractionsExists],
         [patientRequestsOnlyAvailableSearchParamsExists],
         [patientRequestsOnlyAvailableComboSearchParamsExists],
     ])('Should be valid according to the IG %s', async (method) => {
-        // NOTE: JUST FOR THE DEMO PURPOSE
         const requestRepository = TestDataSource.getRepository(Request);
         const requests = await requestRepository.find({
-            where: { session: { id: '97049c1b-0ac3-4b3f-9e9a-fcc8b1709563' } },
+            where: { session: { id: sessionId } },
             relations: ['session'],
         });
         expect(method(requests.filter((request) => request.resourceType === 'Patient'))).toBe(true);
