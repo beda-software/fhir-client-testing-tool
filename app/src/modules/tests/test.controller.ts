@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTestSessionDto } from './test.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { runCLI } from '@jest/core';
 
 @ApiTags('tests')
@@ -11,15 +11,16 @@ export class TestController {
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
-    async create(@Req() req: Request, @Res() res: Response, @Body() createTestSessionDto: CreateTestSessionDto) {
-        // NOTE: WIP
-        process.env.SESSION_ID = createTestSessionDto.sessionId;
-
+    async create(@Res() res: Response, @Body() createTestSessionDto: CreateTestSessionDto) {
         const options = {
             rootDir: './',
             testEnvironment: 'node',
+            // TODO: Fix to work with specific test files
             testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+            globals: JSON.stringify({
+                SESSION_ID: createTestSessionDto.sessionId,
+            }),
         };
 
         try {
