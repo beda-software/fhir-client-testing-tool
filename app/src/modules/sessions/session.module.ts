@@ -6,8 +6,8 @@ import { SessionController } from './session.controller';
 import { RequestModule } from '../requests/request.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Session]), RequestModule],
-  providers: [SessionService],
-  controllers: [SessionController],
+    imports: [TypeOrmModule.forFeature([Session]), RequestModule],
+    providers: [SessionService],
+    controllers: [SessionController],
 })
 export class SessionModule {}

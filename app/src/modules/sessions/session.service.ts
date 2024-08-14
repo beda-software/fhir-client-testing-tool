@@ -7,45 +7,45 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 @Injectable()
 export class SessionService {
-  constructor(
-    @InjectRepository(Session)
-    private readonly sessionRepository: Repository<Session>,
-  ) {}
+    constructor(
+        @InjectRepository(Session)
+        private readonly sessionRepository: Repository<Session>,
+    ) {}
 
-  async create(createSessionDto: CreateSessionDto): Promise<Session> {
-    const session = this.sessionRepository.create(createSessionDto);
-    return this.sessionRepository.save(session);
-  }
-
-  async findAll(): Promise<Session[]> {
-    return this.sessionRepository.find();
-  }
-
-  async findOne(id: string): Promise<Session> {
-    const session = await this.sessionRepository.findOne({ where: { id } });
-    if (!session) {
-      throw new NotFoundException(`Session with ID ${id} not found`);
+    async create(createSessionDto: CreateSessionDto): Promise<Session> {
+        const session = this.sessionRepository.create(createSessionDto);
+        return this.sessionRepository.save(session);
     }
-    return session;
-  }
 
-  async getTarget(id: string): Promise<Session['target']> {
-    const session = await this.sessionRepository.findOne({ where: { id } });
-    if (!session) {
-      throw new NotFoundException(`Session with ID ${id} not found`);
+    async findAll(): Promise<Session[]> {
+        return this.sessionRepository.find();
     }
-    return session.target;
-  }
 
-  async getProxyMiddleware(id: string) {
-    const target = await this.getTarget(id);
-    return createProxyMiddleware({
-      target,
-      changeOrigin: true,
-      pathRewrite: { [`^/sessions/${id}`]: '' },
-      on: {
-        proxyReq: fixRequestBody,
-      },
-    });
-  }
+    async findOne(id: string): Promise<Session> {
+        const session = await this.sessionRepository.findOne({ where: { id } });
+        if (!session) {
+            throw new NotFoundException(`Session with ID ${id} not found`);
+        }
+        return session;
+    }
+
+    async getTarget(id: string): Promise<Session['target']> {
+        const session = await this.sessionRepository.findOne({ where: { id } });
+        if (!session) {
+            throw new NotFoundException(`Session with ID ${id} not found`);
+        }
+        return session.target;
+    }
+
+    async getProxyMiddleware(id: string) {
+        const target = await this.getTarget(id);
+        return createProxyMiddleware({
+            target,
+            changeOrigin: true,
+            pathRewrite: { [`^/sessions/${id}`]: '' },
+            on: {
+                proxyReq: fixRequestBody,
+            },
+        });
+    }
 }

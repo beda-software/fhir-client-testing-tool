@@ -5,9 +5,9 @@ import { RequestService } from './request.service';
 import { RequestController } from './request.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Request])],
-  providers: [RequestService],
-  controllers: [RequestController],
-  exports: [RequestService],
+    imports: [TypeOrmModule.forFeature([Request])],
+    providers: [RequestService],
+    controllers: [RequestController],
+    exports: [RequestService],
 })
 export class RequestModule {}

@@ -6,25 +6,25 @@ import { CreateRequestDto } from './request.dto';
 
 @Injectable()
 export class RequestService {
-  constructor(
-    @InjectRepository(Request)
-    private readonly requestRepository: Repository<Request>,
-  ) {}
+    constructor(
+        @InjectRepository(Request)
+        private readonly requestRepository: Repository<Request>,
+    ) {}
 
-  async create(createRequestDto: CreateRequestDto): Promise<Request> {
-    const request = this.requestRepository.create(createRequestDto);
-    return this.requestRepository.save(request);
-  }
-
-  async findAll(params: any): Promise<Request[]> {
-    return this.requestRepository.find(params);
-  }
-
-  async findOne(id: string): Promise<Request> {
-    const request = await this.requestRepository.findOne({ where: { id } });
-    if (!request) {
-      throw new NotFoundException(`Request with ID ${id} not found`);
+    async create(createRequestDto: CreateRequestDto): Promise<Request> {
+        const request = this.requestRepository.create(createRequestDto);
+        return this.requestRepository.save(request);
     }
-    return request;
-  }
+
+    async findAll(params: any): Promise<Request[]> {
+        return this.requestRepository.find(params);
+    }
+
+    async findOne(id: string): Promise<Request> {
+        const request = await this.requestRepository.findOne({ where: { id } });
+        if (!request) {
+            throw new NotFoundException(`Request with ID ${id} not found`);
+        }
+        return request;
+    }
 }

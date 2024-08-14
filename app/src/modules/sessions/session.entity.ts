@@ -1,23 +1,17 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Request } from '../requests/request.entity';
 
 @Entity()
 export class Session {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ nullable: false })
-  target: string;
+    @Column({ nullable: false })
+    target: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  dt: Date;
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    dt: Date;
 
-  @OneToMany(() => Request, (request) => request.session)
-  requests: Request[];
+    @OneToMany(() => Request, (request) => request.session)
+    requests: Request[];
 }
