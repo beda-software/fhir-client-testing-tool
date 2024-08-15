@@ -1,3 +1,5 @@
 .env
 .clj-kondo/
 .lsp/
+node_modules
+dist
