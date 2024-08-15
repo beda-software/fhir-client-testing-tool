@@ -7,4 +7,11 @@ export class CreateTestSessionDto {
         type: String,
     })
     sessionId: string;
+
+    @ApiProperty({
+        example: '1.0.0-ballot',
+        description: 'Run specific test suite',
+        type: String,
+    })
+    suiteId: string;
 }

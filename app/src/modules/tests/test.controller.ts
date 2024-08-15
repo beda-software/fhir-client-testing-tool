@@ -12,15 +12,18 @@ export class TestController {
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
     async create(@Res() res: Response, @Body() createTestSessionDto: CreateTestSessionDto) {
+        const { suiteId, sessionId } = createTestSessionDto;
+        const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
+
         const options = {
             rootDir: './',
             testEnvironment: 'node',
-            // TODO: Fix to work with specific test files
-            testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
+            testRegex: testRegex,
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
             globals: JSON.stringify({
-                SESSION_ID: createTestSessionDto.sessionId,
+                SESSION_ID: sessionId,
             }),
+            silent: true,
         };
 
         try {

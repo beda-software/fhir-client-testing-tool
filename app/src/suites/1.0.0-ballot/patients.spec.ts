@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { Request } from '../modules/requests/request.entity';
-import { Session } from '../modules/sessions/session.entity';
+import { Request } from '../../modules/requests/request.entity';
+import { Session } from '../../modules/sessions/session.entity';
 
 const TestDataSource = new DataSource({
     type: 'postgres',
@@ -72,6 +72,9 @@ describe('Patients test', () => {
             where: { session: { id: global.SESSION_ID } },
             relations: ['session'],
         });
-        expect(method(requests.filter((request) => request.resourceType === 'Patient'))).toBe(true);
+        const filteredRequests = requests.filter((request) => request.resourceType === 'Patient');
+
+        expect(filteredRequests.length).toBeGreaterThan(0);
+        expect(method(filteredRequests)).toBe(true);
     });
 });
