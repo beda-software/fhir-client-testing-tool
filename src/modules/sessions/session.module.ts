@@ -9,5 +9,6 @@ import { RequestModule } from '../requests/request.module';
     imports: [TypeOrmModule.forFeature([Session]), RequestModule],
     providers: [SessionService],
     controllers: [SessionController],
+    exports: [SessionService],
 })
 export class SessionModule {}

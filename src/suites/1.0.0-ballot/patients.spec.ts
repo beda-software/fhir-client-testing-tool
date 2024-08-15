@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { Session } from '../../modules/sessions/session.entity';
+import { TestEntity } from '../../modules/tests/test.entity';
 
 const TestDataSource = new DataSource({
     type: 'postgres',
@@ -9,7 +10,7 @@ const TestDataSource = new DataSource({
     username: 'myuser',
     password: 'mypassword',
     database: 'mydatabase',
-    entities: [Request, Session],
+    entities: [Request, Session, TestEntity],
     synchronize: true,
     logging: false,
 });

@@ -3,11 +3,16 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTestSessionDto } from './test.dto';
 import { Response } from 'express';
 import { runCLI } from '@jest/core';
+import { TestService } from './test.service';
+import { SessionService } from '../sessions/session.service';
 
 @ApiTags('tests')
 @Controller('tests')
 export class TestController {
-    constructor() {}
+    constructor(
+        private readonly testService: TestService,
+        private readonly sessionService: SessionService,
+    ) {}
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
@@ -28,7 +33,13 @@ export class TestController {
 
         try {
             const { results } = await runCLI(options as any, [process.cwd()]);
-            res.status(200).json({ results });
+            const currentSession = await this.sessionService.findOne(sessionId);
+            const testEntity = await this.testService.create({
+                session: currentSession,
+                suiteId,
+                testResults: results,
+            });
+            res.status(200).json({ testEntity });
         } catch (error) {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
