@@ -3,7 +3,7 @@ import { Session } from '../sessions/session.entity';
 import { jsonbType } from 'src/utils/types';
 
 @Entity()
-export class TestEntity {
+export class TestRun {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

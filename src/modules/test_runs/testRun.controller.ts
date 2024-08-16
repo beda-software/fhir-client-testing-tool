@@ -1,22 +1,22 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateTestSessionDto } from './test.dto';
+import { InitiateTestRunDto } from './testRun.dto';
 import { Response } from 'express';
 import { runCLI } from '@jest/core';
-import { TestService } from './test.service';
+import { TestRunService } from './testRun.service';
 import { SessionService } from '../sessions/session.service';
 
-@ApiTags('tests')
-@Controller('tests')
-export class TestController {
+@ApiTags('test-runs')
+@Controller('test-runs')
+export class TestRunController {
     constructor(
-        private readonly testService: TestService,
+        private readonly testRunService: TestRunService,
         private readonly sessionService: SessionService,
     ) {}
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
-    async create(@Res() res: Response, @Body() createTestSessionDto: CreateTestSessionDto) {
+    async create(@Res() res: Response, @Body() createTestSessionDto: InitiateTestRunDto) {
         const { suiteId, sessionId } = createTestSessionDto;
         const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
 
@@ -34,12 +34,12 @@ export class TestController {
         try {
             const { results } = await runCLI(options as any, [process.cwd()]);
             const currentSession = await this.sessionService.findOne(sessionId);
-            const testEntity = await this.testService.create({
+            const testRun = await this.testRunService.create({
                 session: currentSession,
                 suiteId,
                 testResults: results,
             });
-            res.status(200).json({ testEntity });
+            res.status(200).json({ testRun });
         } catch (error) {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }

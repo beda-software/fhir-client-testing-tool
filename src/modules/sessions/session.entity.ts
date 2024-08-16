@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Request } from '../requests/request.entity';
-import { TestEntity } from '../tests/test.entity';
+import { TestRun } from '../test_runs/testRun.entity';
 
 @Entity()
 export class Session {
@@ -16,6 +16,6 @@ export class Session {
     @OneToMany(() => Request, (request) => request.session)
     requests: Request[];
 
-    @OneToMany(() => TestEntity, (testEntity) => testEntity.session)
-    testEntities: TestEntity[];
+    @OneToMany(() => TestRun, (testRun) => testRun.session)
+    testEntities: TestRun[];
 }

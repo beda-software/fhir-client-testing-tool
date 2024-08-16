@@ -3,7 +3,7 @@ import { json } from 'node:stream/consumers';
 import { jsonbType } from 'src/utils/types';
 import { Session } from '../sessions/session.entity';
 
-export class CreateTestEntityDto {
+export class CreateTestRunDto {
     @ApiProperty({
         example: '97049c1b-0ac3-4b3f-9e9a-fcc8b1709563',
         description: 'Run tests for the session',
@@ -25,7 +25,7 @@ export class CreateTestEntityDto {
     testResults: jsonbType;
 }
 
-export class CreateTestSessionDto {
+export class InitiateTestRunDto {
     @ApiProperty({
         example: '97049c1b-0ac3-4b3f-9e9a-fcc8b1709563',
         description: 'Run tests for the session',
