@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RequestModule } from './modules/requests/request.module';
 import { SessionModule } from './modules/sessions/session.module';
 import { TestRunModule } from './modules/test_runs/testRun.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
@@ -16,6 +17,9 @@ import { TestRunModule } from './modules/test_runs/testRun.module';
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             synchronize: true,
             autoLoadEntities: true,
+        }),
+        ConfigModule.forRoot({
+            isGlobal: true,
         }),
         SessionModule,
         RequestModule,
