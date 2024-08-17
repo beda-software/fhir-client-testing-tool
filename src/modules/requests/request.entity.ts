@@ -68,6 +68,9 @@ export class Request {
     @Column({ name: 'status', type: 'smallint' })
     status: Response['statusCode'];
 
+    @Column({ name: 'request_body', type: 'jsonb', nullable: true })
+    requestBody: jsonbType;
+
     @Column({ name: 'response_body', type: 'jsonb', nullable: true })
     responseBody: jsonbType;
 

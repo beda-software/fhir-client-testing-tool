@@ -66,4 +66,7 @@ export class CreateRequestDto {
 
     @ApiProperty({ description: 'Data payload of the response', type: Object })
     responseBody: jsonbType;
+
+    @ApiProperty({ description: 'Data payload of the request', type: Object })
+    requestBody?: jsonbType;
 }
