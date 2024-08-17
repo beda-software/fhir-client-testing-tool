@@ -2,6 +2,8 @@ import { DataSource } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { Session } from '../../modules/sessions/session.entity';
 import { TestRun } from '../../modules/test_runs/testRun.entity';
+import { isResourceValid } from 'src/utils/services';
+import { Patient } from 'fhir/r4';
 
 const TestDataSource = new DataSource({
     type: 'postgres',
@@ -24,7 +26,7 @@ afterAll(async () => {
 });
 
 function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
-    const availableInteractions = ['READ', 'SEARCH'];
+    const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
     const filteredRequests = requests.filter((request) => !availableInteractions.includes(request.fhirAction));
 
     return filteredRequests.length === 0;
@@ -62,11 +64,22 @@ function checkAvailableParams(availableParams: string[], combo: boolean, request
     return uniqueUsedComboSearchParams.every((searchParam) => availableParams.includes(searchParam));
 }
 
+async function patientRequestCreateValidPatient(requests: Request[]): Promise<boolean> {
+    const createRequests = requests.filter((request) => request.fhirAction === 'CREATE');
+    const filteredRequests = createRequests.filter((request) => request.requestBody.resourceType === 'Patient');
+    const invalidResources = filteredRequests.map(
+        async (request) => await isResourceValid(request.requestBody as Patient),
+    );
+
+    return invalidResources.length === 0;
+}
+
 describe('Patients test', () => {
     test.each([
         [patientRequestsOnlyAvailableInteractionsExists],
         [patientRequestsOnlyAvailableSearchParamsExists],
         [patientRequestsOnlyAvailableComboSearchParamsExists],
+        [patientRequestCreateValidPatient],
     ])('Should be valid according to the IG %s', async (method) => {
         const requestRepository = TestDataSource.getRepository(Request);
         const requests = await requestRepository.find({

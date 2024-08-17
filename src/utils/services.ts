@@ -1,4 +1,6 @@
 import axios from 'axios';
+import e from 'express';
+import { FhirResource } from 'fhir/r4';
 
 export async function validateResource(ig: string, version: string, txServer: string, resource: string) {
     const { VALIDATOR_URL } = process.env;
@@ -21,6 +23,17 @@ export async function validateResource(ig: string, version: string, txServer: st
     };
 
     return axios.post(`${VALIDATOR_URL}/validate`, requestConfig);
+}
+
+export async function isResourceValid(resource: FhirResource): Promise<boolean> {
+    const { IG, IG_VERSION, TX_SERVER } = process.env;
+    try {
+        const result = await validateResource(IG, IG_VERSION, TX_SERVER, JSON.stringify(resource));
+        return result.data.outcomes?.[0]?.issues.length === 0;
+    } catch (error) {
+        console.error('Error validating resource', error);
+        return false;
+    }
 }
 
 export async function initialValidateResource() {

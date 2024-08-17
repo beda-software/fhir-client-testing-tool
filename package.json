@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.4.0",
     "@nestjs/typeorm": "^10.0.2",
+    "@types/fhir": "^0.0.41",
     "axios": "^1.7.4",
     "dotenv": "^16.4.5",
     "flatted": "^3.3.1",
