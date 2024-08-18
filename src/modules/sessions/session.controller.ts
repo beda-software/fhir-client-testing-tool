@@ -1,7 +1,6 @@
 import { Controller, Post, Body, Param, Req, Res, All } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { SessionService } from './session.service';
-import { Session } from './session.entity';
 import { CreateSessionDto } from './session.dto';
 import { RequestService } from '../requests/request.service';
 import { Request, Response } from 'express';
@@ -21,8 +20,12 @@ export class SessionController {
 
     @Post()
     @ApiOperation({ summary: 'Create a new session' })
-    create(@Body() createSessionDto: CreateSessionDto): Promise<Session> {
-        return this.sessionService.create(createSessionDto);
+    async create(@Body() createSessionDto: CreateSessionDto): Promise<any> {
+        // TODO: Remove any
+        const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
+        const sessionEntity = await this.sessionService.create(createSessionDto);
+
+        return { ...sessionEntity, baseUrl: `${backendUrl}/sessions/${sessionEntity.id}` };
     }
 
     @All(':id/**')
