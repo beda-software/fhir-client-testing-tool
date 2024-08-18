@@ -28,7 +28,7 @@ export class TestRunController {
             globals: JSON.stringify({
                 SESSION_ID: sessionId,
             }),
-            silent: true,
+            // silent: true,
         };
 
         try {

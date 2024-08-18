@@ -65,13 +65,15 @@ function checkAvailableParams(availableParams: string[], combo: boolean, request
 }
 
 async function patientRequestCreateValidPatient(requests: Request[]): Promise<boolean> {
-    const createRequests = requests.filter((request) => request.fhirAction === 'CREATE');
-    const filteredRequests = createRequests.filter((request) => request.requestBody.resourceType === 'Patient');
-    const invalidResources = await Promise.all(
+    const filteredRequests = requests.filter(
+        (request) => request.fhirAction === 'CREATE' && request.requestBody?.resourceType === 'Patient',
+    );
+    const validationStatuses = await Promise.all(
         filteredRequests.map(async (request) => await isResourceValid(request.requestBody as Patient)),
     );
+    const falseValidations = validationStatuses.filter((status) => status === false);
 
-    return invalidResources.length === 0;
+    return falseValidations.length === 0;
 }
 
 describe('Patients test', () => {

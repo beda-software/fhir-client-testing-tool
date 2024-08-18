@@ -2,9 +2,9 @@ import axios from 'axios';
 import { FhirResource } from 'fhir/r4';
 
 function getValidatorEnvs() {
-    const { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER } = process.env;
+    const { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER, VALIDATOR_SENSITIVITY } = process.env;
 
-    if (!VALIDATOR_URL || !IG || !IG_VERSION || !TX_SERVER) {
+    if (!VALIDATOR_URL || !IG || !IG_VERSION || !TX_SERVER || !VALIDATOR_SENSITIVITY) {
         console.warn('Missing validator variables');
 
         return {
@@ -12,10 +12,11 @@ function getValidatorEnvs() {
             IG: 'hl7.fhir.au.core',
             IG_VERSION: '1.0.0-ballot',
             TX_SERVER: 'https://tx.dev.hl7.org.au/fhir',
+            VALIDATOR_SENSITIVITY: ['ERROR'],
         };
     }
 
-    return { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER };
+    return { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER, VALIDATOR_SENSITIVITY: VALIDATOR_SENSITIVITY.split(',') };
 }
 
 export async function validateResource(ig: string, version: string, txServer: string, resource: string) {
@@ -44,10 +45,10 @@ export async function validateResource(ig: string, version: string, txServer: st
 }
 
 export async function isResourceValid(resource: FhirResource): Promise<boolean> {
-    const { IG, IG_VERSION, TX_SERVER } = getValidatorEnvs();
+    const { IG, IG_VERSION, TX_SERVER, VALIDATOR_SENSITIVITY } = getValidatorEnvs();
     try {
         const result = await validateResource(IG, IG_VERSION, TX_SERVER, JSON.stringify(resource));
-        return result.outcomes?.[0]?.issues.length === 0;
+        return result.outcomes?.[0]?.issues.filter((issue) => VALIDATOR_SENSITIVITY.includes(issue.level)).length === 0;
     } catch (error) {
         console.error('Error validating resource', error);
         return false;
