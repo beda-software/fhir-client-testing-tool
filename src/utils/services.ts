@@ -1,9 +1,25 @@
 import axios from 'axios';
-import e from 'express';
 import { FhirResource } from 'fhir/r4';
 
+function getValidatorEnvs() {
+    const { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER } = process.env;
+
+    if (!VALIDATOR_URL || !IG || !IG_VERSION || !TX_SERVER) {
+        console.warn('Missing validator variables');
+
+        return {
+            VALIDATOR_URL: 'http://validator-api:3500',
+            IG: 'hl7.fhir.au.core',
+            IG_VERSION: '1.0.0-ballot',
+            TX_SERVER: 'https://tx.dev.hl7.org.au/fhir',
+        };
+    }
+
+    return { VALIDATOR_URL, IG, IG_VERSION, TX_SERVER };
+}
+
 export async function validateResource(ig: string, version: string, txServer: string, resource: string) {
-    const { VALIDATOR_URL } = process.env;
+    const { VALIDATOR_URL } = getValidatorEnvs();
 
     const requestConfig = {
         cliContext: {
@@ -22,14 +38,16 @@ export async function validateResource(ig: string, version: string, txServer: st
         sessionId: '32fc25cf-020e-4492-ace5-03fe904d22e0',
     };
 
-    return axios.post(`${VALIDATOR_URL}/validate`, requestConfig);
+    const response = await axios.post(`${VALIDATOR_URL}/validate`, requestConfig, { timeout: 30000 });
+
+    return response.data;
 }
 
 export async function isResourceValid(resource: FhirResource): Promise<boolean> {
-    const { IG, IG_VERSION, TX_SERVER } = process.env;
+    const { IG, IG_VERSION, TX_SERVER } = getValidatorEnvs();
     try {
         const result = await validateResource(IG, IG_VERSION, TX_SERVER, JSON.stringify(resource));
-        return result.data.outcomes?.[0]?.issues.length === 0;
+        return result.outcomes?.[0]?.issues.length === 0;
     } catch (error) {
         console.error('Error validating resource', error);
         return false;
@@ -37,16 +55,16 @@ export async function isResourceValid(resource: FhirResource): Promise<boolean> 
 }
 
 export async function initialValidateResource() {
-    const { IG, IG_VERSION, TX_SERVER } = process.env;
+    const { IG, IG_VERSION, TX_SERVER } = getValidatorEnvs();
     const resourceToValidate = '"{"resourceType": "Patient"}"';
-    console.log('Initialization validator with specific config');
-    console.log('IG is: ', IG);
-    console.log('IG version is: ', IG_VERSION);
-    console.log('TX server is: ', TX_SERVER);
+    console.info('Initialization validator with specific config');
+    console.info('IG is: ', IG);
+    console.info('IG version is: ', IG_VERSION);
+    console.info('TX server is: ', TX_SERVER);
 
     try {
         await validateResource(IG, IG_VERSION, TX_SERVER, resourceToValidate);
-        console.log('Initialization validator with specific config done');
+        console.info('Initialization validator with specific config done');
     } catch (error) {
         console.error('Error initializing validator with specific config', error);
         return;

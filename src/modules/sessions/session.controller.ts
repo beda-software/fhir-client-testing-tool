@@ -11,6 +11,9 @@ import { captureResponseBody } from 'src/utils/responses';
 @ApiTags('sessions')
 @Controller('sessions')
 export class SessionController {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    private sessionListeners = new Map<string, Function>();
+
     constructor(
         private readonly sessionService: SessionService,
         private readonly requestService: RequestService,
@@ -30,11 +33,18 @@ export class SessionController {
         const proxyMiddleware = await this.sessionService.getProxyMiddleware(id);
         const responsePromise = captureResponseBody(res);
 
-        proxyMiddleware(req, res);
+        // TODO: Implement the logic to manage listener
+        if (!this.sessionListeners.has(id)) {
+            const listener = async (req: Request, res: Response) => {
+                proxyMiddleware(req, res);
+                const responseBody = await responsePromise;
+                const target = await this.sessionService.getTarget(id);
+                await this.requestService.create(createRequestObject(id, target, session, req, res, responseBody));
+            };
+            this.sessionListeners.set(id, listener);
+        }
 
-        const responseBody = await responsePromise;
-        const target = await this.sessionService.getTarget(id);
-
-        await this.requestService.create(createRequestObject(id, target, session, req, res, responseBody));
+        const listener = this.sessionListeners.get(id);
+        listener(req, res);
     }
 }

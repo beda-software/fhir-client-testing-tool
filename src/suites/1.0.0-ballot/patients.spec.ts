@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { Session } from '../../modules/sessions/session.entity';
 import { TestRun } from '../../modules/test_runs/testRun.entity';
-import { isResourceValid } from 'src/utils/services';
+import { isResourceValid } from '../../utils/services';
 import { Patient } from 'fhir/r4';
 
 const TestDataSource = new DataSource({
@@ -67,28 +67,48 @@ function checkAvailableParams(availableParams: string[], combo: boolean, request
 async function patientRequestCreateValidPatient(requests: Request[]): Promise<boolean> {
     const createRequests = requests.filter((request) => request.fhirAction === 'CREATE');
     const filteredRequests = createRequests.filter((request) => request.requestBody.resourceType === 'Patient');
-    const invalidResources = filteredRequests.map(
-        async (request) => await isResourceValid(request.requestBody as Patient),
+    const invalidResources = await Promise.all(
+        filteredRequests.map(async (request) => await isResourceValid(request.requestBody as Patient)),
     );
 
     return invalidResources.length === 0;
 }
 
 describe('Patients test', () => {
-    test.each([
-        [patientRequestsOnlyAvailableInteractionsExists],
-        [patientRequestsOnlyAvailableSearchParamsExists],
-        [patientRequestsOnlyAvailableComboSearchParamsExists],
-        [patientRequestCreateValidPatient],
-    ])('Should be valid according to the IG %s', async (method) => {
+    let requests: Request[];
+
+    beforeAll(async () => {
         const requestRepository = TestDataSource.getRepository(Request);
-        const requests = await requestRepository.find({
+        requests = await requestRepository.find({
             where: { session: { id: global.SESSION_ID } },
             relations: ['session'],
         });
-        const filteredRequests = requests.filter((request) => request.resourceType === 'Patient');
+        requests = requests.filter((request) => request.resourceType === 'Patient');
+    });
 
-        expect(filteredRequests.length).toBeGreaterThan(0);
-        expect(method(filteredRequests)).toBe(true);
+    test('Should only have available interactions', () => {
+        expect(patientRequestsOnlyAvailableInteractionsExists(requests)).toBe(true);
+    });
+
+    test('Should only have available search params', () => {
+        expect(
+            patientRequestsOnlyAvailableSearchParamsExists(
+                requests.filter((request) => request.fhirAction === 'SEARCH'),
+            ),
+        ).toBe(true);
+    });
+
+    test('Should only have available combo search params', () => {
+        expect(
+            patientRequestsOnlyAvailableComboSearchParamsExists(
+                requests.filter((request) => request.fhirAction === 'SEARCH'),
+            ),
+        ).toBe(true);
+    });
+
+    test('Should only have valid resources in CREATE action', async () => {
+        expect(
+            await patientRequestCreateValidPatient(requests.filter((request) => request.fhirAction === 'CREATE')),
+        ).toBe(true);
     });
 });

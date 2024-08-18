@@ -36,6 +36,6 @@ export function createRequestObject(
         filters: searchReqObj.filters,
         status: res.statusCode,
         responseBody: JSON.parse(responseBody),
-        requestBody: JSON.parse(req.body),
+        requestBody: req.body,
     };
 }
