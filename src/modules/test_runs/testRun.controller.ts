@@ -21,6 +21,8 @@ export class TestRunController {
         const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
 
         const options = {
+            globalSetup: './src/utils/setup/jest.setup.ts',
+            globalTeardown: './src/utils/setup/jest.teardown.ts',
             rootDir: './',
             testEnvironment: 'node',
             testRegex: testRegex,

@@ -1,29 +1,6 @@
-import { DataSource } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
-import { Session } from '../../modules/sessions/session.entity';
-import { TestRun } from '../../modules/test_runs/testRun.entity';
 import { isResourceValid } from '../../utils/services';
 import { Patient } from 'fhir/r4';
-
-const TestDataSource = new DataSource({
-    type: 'postgres',
-    host: 'postgres',
-    port: 5432,
-    username: 'myuser',
-    password: 'mypassword',
-    database: 'mydatabase',
-    entities: [Request, Session, TestRun],
-    synchronize: true,
-    logging: false,
-});
-
-beforeAll(async () => {
-    await TestDataSource.initialize();
-});
-
-afterAll(async () => {
-    await TestDataSource.destroy();
-});
 
 function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
     const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
@@ -80,12 +57,10 @@ describe('Patients test', () => {
     let requests: Request[];
 
     beforeAll(async () => {
-        const requestRepository = TestDataSource.getRepository(Request);
-        requests = await requestRepository.find({
-            where: { session: { id: global.SESSION_ID } },
+        requests = await global.RequestsRepository.find({
+            where: { session: { id: global.SESSION_ID }, resourceType: 'Patient' },
             relations: ['session'],
         });
-        requests = requests.filter((request) => request.resourceType === 'Patient');
     });
 
     test('Should only have available interactions', () => {
