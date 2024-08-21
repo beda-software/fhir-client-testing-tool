@@ -10,6 +10,18 @@ services:
     command: yarn start:dev
     depends_on:
       - postgres
+    profiles:
+      - development
+      - production
+  test:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: yarn test
+    depends_on:
+      - postgres
+    profiles:
+      - tests
   postgres:
     image: postgres:15
     ports:
@@ -20,6 +32,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    profiles:
+      - development
+      - tests
+      - production
   pgweb:
     container_name: pgweb
     restart: always
@@ -32,12 +48,18 @@ services:
       - DATABASE_URL=postgres://myuser:mypassword@postgres:5432/mydatabase?sslmode=disable
     depends_on:
       - postgres
+    profiles:
+      - development
   validator-api:
     image: pavelrozhkov/wrapper:6.3.11
     ports:
       - "3500:3500"
     environment:
       SESSION_CACHE_DURATION: -1
+    profiles:
+      - development
+      - tests
+      - production
 
 volumes:
   postgres_data:

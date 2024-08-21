@@ -1,28 +1,30 @@
+import { In, Not } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { isResourceValid } from '../../utils/services';
 import { Patient } from 'fhir/r4';
+import { getRequestsWithUnavailableSearchParams } from 'src/utils/clientTestingHelpers';
 
-function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
-    const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
-    const filteredRequests = requests.filter((request) => !availableInteractions.includes(request.fhirAction));
+// function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
+//     const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
+//     const filteredRequests = requests.filter((request) => !availableInteractions.includes(request.fhirAction));
 
-    return filteredRequests.length === 0;
-}
+//     return filteredRequests.length === 0;
+// }
 
-function patientRequestsOnlyAvailableSearchParamsExists(requests: Request[]): boolean {
-    const availableSearchParams = [
-        '_id',
-        'birthdate',
-        'family',
-        'gender',
-        'identifier',
-        'name',
-        'gender-identity',
-        'indigenous-status',
-    ];
+// function patientRequestsOnlyAvailableSearchParamsExists(requests: Request[]): boolean {
+//     const availableSearchParams = [
+//         '_id',
+//         'birthdate',
+//         'family',
+//         'gender',
+//         'identifier',
+//         'name',
+//         'gender-identity',
+//         'indigenous-status',
+//     ];
 
-    return checkAvailableParams(availableSearchParams, false, requests);
-}
+//     return checkAvailableParams(availableSearchParams, false, requests);
+// }
 
 function patientRequestsOnlyAvailableComboSearchParamsExists(requests: Request[]): boolean {
     const availableComboSearchParams = ['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender'];
@@ -63,16 +65,26 @@ describe('Patients test', () => {
         });
     });
 
-    test('Should only have available interactions', () => {
-        expect(patientRequestsOnlyAvailableInteractionsExists(requests)).toBe(true);
+    test('Should only have available interactions', async () => {
+        requests = await global.RequestsRepository.find({
+            where: {
+                session: { id: global.SESSION_ID },
+                resourceType: 'Patient',
+                fhirAction: Not(In(['READ', 'SEARCH', 'CREATE', 'UPDATE'])),
+            },
+            relations: ['session'],
+        });
+        expect(requests.length).toBe(0);
     });
 
-    test('Should only have available search params', () => {
-        expect(
-            patientRequestsOnlyAvailableSearchParamsExists(
-                requests.filter((request) => request.fhirAction === 'SEARCH'),
-            ),
-        ).toBe(true);
+    test('Should only have available search params', async () => {
+        const requests = await getRequestsWithUnavailableSearchParams(
+            global.RequestsRepository,
+            global.SESSION_ID,
+            'Patient',
+            ['_id', 'birthdate', 'family', 'gender', 'identifier', 'name', 'gender-identity', 'indigenous-status'],
+        );
+        expect(requests.length).toBe(0);
     });
 
     test('Should only have available combo search params', () => {
