@@ -1,4 +1,3 @@
-// jest.setup.js
 import { DataSource } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { Session } from '../../modules/sessions/session.entity';
@@ -8,9 +7,9 @@ const TestDataSource = new DataSource({
     type: 'postgres',
     host: 'postgres',
     port: 5432,
-    username: 'myuser',
-    password: 'mypassword',
-    database: 'mydatabase',
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
     entities: [Request, Session, TestRun],
     synchronize: true,
     logging: false,
