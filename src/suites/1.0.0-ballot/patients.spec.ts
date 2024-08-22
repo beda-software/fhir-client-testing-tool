@@ -2,7 +2,10 @@ import { In, Not } from 'typeorm';
 import { Request } from '../../modules/requests/request.entity';
 import { isResourceValid } from '../../utils/services';
 import { Patient } from 'fhir/r4';
-import { getRequestsWithUnavailableSearchParams } from 'src/utils/clientTestingHelpers';
+import {
+    getRequestsWithUnavailableComboSearchParams,
+    getRequestsWithUnavailableSearchParams,
+} from '../../utils/clientTestingHelpers';
 
 // function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
 //     const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
@@ -26,22 +29,22 @@ import { getRequestsWithUnavailableSearchParams } from 'src/utils/clientTestingH
 //     return checkAvailableParams(availableSearchParams, false, requests);
 // }
 
-function patientRequestsOnlyAvailableComboSearchParamsExists(requests: Request[]): boolean {
-    const availableComboSearchParams = ['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender'];
+// function patientRequestsOnlyAvailableComboSearchParamsExists(requests: Request[]): boolean {
+//     const availableComboSearchParams = ['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender'];
 
-    return checkAvailableParams(availableComboSearchParams, true, requests);
-}
+//     return checkAvailableParams(availableComboSearchParams, true, requests);
+// }
 
-function checkAvailableParams(availableParams: string[], combo: boolean, requests: Request[]): boolean {
-    const filterCombo = (param: string) => (combo ? param.includes('+') : !param.includes('+'));
-    const usedComboSearchParams = requests
-        .flatMap((request) => request.filters.map((filter) => filter.code))
-        .filter((param) => filterCombo(param));
+// function checkAvailableParams(availableParams: string[], combo: boolean, requests: Request[]): boolean {
+//     const filterCombo = (param: string) => (combo ? param.includes('+') : !param.includes('+'));
+//     const usedComboSearchParams = requests
+//         .flatMap((request) => request.filters.map((filter) => filter.code))
+//         .filter((param) => filterCombo(param));
 
-    const uniqueUsedComboSearchParams = [...new Set(usedComboSearchParams)];
+//     const uniqueUsedComboSearchParams = [...new Set(usedComboSearchParams)];
 
-    return uniqueUsedComboSearchParams.every((searchParam) => availableParams.includes(searchParam));
-}
+//     return uniqueUsedComboSearchParams.every((searchParam) => availableParams.includes(searchParam));
+// }
 
 async function patientRequestCreateValidPatient(requests: Request[]): Promise<boolean> {
     const filteredRequests = requests.filter(
@@ -87,12 +90,19 @@ describe('Patients test', () => {
         expect(requests.length).toBe(0);
     });
 
-    test('Should only have available combo search params', () => {
-        expect(
-            patientRequestsOnlyAvailableComboSearchParamsExists(
-                requests.filter((request) => request.fhirAction === 'SEARCH'),
-            ),
-        ).toBe(true);
+    test('Should only have available combo search params', async () => {
+        const requests = await getRequestsWithUnavailableComboSearchParams(
+            global.RequestsRepository,
+            global.SESSION_ID,
+            'Patient',
+            [
+                ['birthdate', 'family'],
+                ['birthdate', 'name'],
+                ['gender', 'name'],
+                ['family', 'gender'],
+            ],
+        );
+        expect(requests.length).toBe(0);
     });
 
     test('Should only have valid resources in CREATE action', async () => {
