@@ -61,6 +61,9 @@ export class CreateRequestDto {
     @ApiProperty({ description: 'Filters applied to the request' })
     filters: jsonbType;
 
+    @ApiProperty({ description: 'Filters codes applied to the request' })
+    filtersCodes: string[];
+
     @ApiProperty({ description: 'HTTP status code of the response' })
     status: Response['statusCode'];
 

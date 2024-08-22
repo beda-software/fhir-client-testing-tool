@@ -31,4 +31,4 @@ tests_run:
 	$(compose) $(tests_env) $(tests_profile) up --abort-on-container-exit
 
 tests_down:
-	$(compose) $(tests_env) $(tests_profile) down
+	$(compose) $(tests_env) $(tests_profile) down -v

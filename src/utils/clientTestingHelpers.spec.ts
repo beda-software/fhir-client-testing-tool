@@ -2,7 +2,11 @@ import { DataSource } from 'typeorm';
 import { Request } from '../modules/requests/request.entity';
 import { Session } from '../modules/sessions/session.entity';
 import { TestRun } from '../modules/test_runs/testRun.entity';
-import { getRequestsWithUnavailableSearchParams } from './clientTestingHelpers';
+import {
+    getRequestsWithUnavailableComboSearchParams,
+    getRequestsWithUnavailableSearchParams,
+} from './clientTestingHelpers';
+import { v4 as uuidv4 } from 'uuid';
 
 const TestDataSource = new DataSource({
     type: 'postgres',
@@ -17,8 +21,61 @@ const TestDataSource = new DataSource({
     logging: false,
 });
 
+const sessionUUID = uuidv4();
+
 beforeAll(async () => {
     await TestDataSource.initialize();
+    const sessionRepository = TestDataSource.getRepository(Session);
+    const requestsRepository = TestDataSource.getRepository(Request);
+    const sessionEntity = await sessionRepository.save({
+        id: sessionUUID,
+        target: 'http://test.com',
+    });
+
+    for (const requestData of [
+        { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: '_id', value: '123' }] },
+        { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: 'family', value: '123' }] },
+        {
+            resourceType: 'Patient',
+            fhirAction: 'SEARCH',
+            filters: [
+                { code: 'family', value: '123' },
+                { code: 'gender', value: 'unknown' },
+            ],
+        },
+        {
+            resourceType: 'Patient',
+            fhirAction: 'SEARCH',
+            filters: [
+                { code: 'family', value: '123' },
+                { code: 'name', value: 'unknown' },
+            ],
+        },
+        {
+            resourceType: 'Patient',
+            fhirAction: 'SEARCH',
+            filters: [
+                { code: 'test', value: '123' },
+                { code: 'name', value: 'unknown' },
+            ],
+        },
+        { resourceType: 'Patent', fhirAction: 'CREATE' },
+        { resourceType: 'Observation', fhirAction: 'SEARCH' },
+    ]) {
+        await requestsRepository.save({
+            session: sessionEntity,
+            resourceType: requestData.resourceType,
+            fhirAction: requestData.fhirAction,
+            requestMethod: 'GET',
+            requestUri: '/Patient',
+            remoteAddr: 'undefined',
+            status: 200,
+            userAgent: 'Mozilla/5.0',
+            headers: {},
+            filters: requestData.filters,
+            filtersCodes: requestData.filters?.map((filter) => filter.code).sort() ?? [],
+        });
+    }
 });
 
 afterAll(async () => {
@@ -26,44 +83,19 @@ afterAll(async () => {
 });
 
 describe('Client testing helpers', () => {
+    const requestsRepository = TestDataSource.getRepository(Request);
     it('Should return correct request entities via getRequestsWithUnavailableSearchParams', async () => {
-        const sessionRepository = TestDataSource.getRepository(Session);
-        const requestsRepository = TestDataSource.getRepository(Request);
-
-        const sessionEntity = await sessionRepository.save({
-            target: 'http://test.com',
-        });
-
-        for (const requestData of [
-            { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: '_id', value: '123' }] },
-            { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: 'family', value: '123' }] },
-            {
-                resourceType: 'Patient',
-                fhirAction: 'SEARCH',
-                filters: [
-                    { code: '_id', value: '123' },
-                    { code: 'family', value: '123' },
-                ],
-            },
-            { resourceType: 'Patent', fhirAction: 'CREATE' },
-            { resourceType: 'Observation', fhirAction: 'SEARCH' },
-        ]) {
-            await requestsRepository.save({
-                session: sessionEntity,
-                resourceType: requestData.resourceType,
-                fhirAction: requestData.fhirAction,
-                requestMethod: 'GET',
-                requestUri: '/Patient',
-                remoteAddr: 'undefined',
-                status: 200,
-                userAgent: 'Mozilla/5.0',
-                headers: {},
-                filters: requestData.filters,
-            });
-        }
-
-        const requests = await getRequestsWithUnavailableSearchParams(requestsRepository, sessionEntity.id, 'Patient', [
+        const requests = await getRequestsWithUnavailableSearchParams(requestsRepository, sessionUUID, 'Patient', [
             '_id',
+        ]);
+
+        expect(requests).toHaveLength(1);
+    });
+
+    it('Should return correct request entities via getRequestsWithUnavailableComboSearchParams', async () => {
+        const requests = await getRequestsWithUnavailableComboSearchParams(requestsRepository, sessionUUID, 'Patient', [
+            ['family', 'name'],
+            ['family', 'gender'],
         ]);
 
         expect(requests).toHaveLength(1);

@@ -13,10 +13,8 @@ services:
     profiles:
       - development
       - production
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - ./envs/.env.development
   test:
     build:
       context: ./
@@ -26,10 +24,8 @@ services:
       - postgres
     profiles:
       - tests
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - ./envs/.env.test
   postgres:
     image: postgres:15
     ports:
@@ -44,20 +40,6 @@ services:
       - development
       - tests
       - production
-  pgweb:
-    container_name: pgweb
-    restart: always
-    image: sosedoff/pgweb
-    ports:
-      - "8081:8081"
-    links:
-      - postgres:postgres
-    environment:
-      - DATABASE_URL=postgres://myuser:mypassword@postgres:5432/mydatabase?sslmode=disable
-    depends_on:
-      - postgres
-    profiles:
-      - development
   validator-api:
     image: pavelrozhkov/wrapper:6.3.11
     ports:

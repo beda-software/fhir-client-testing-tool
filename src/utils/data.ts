@@ -34,6 +34,7 @@ export function createRequestObject(
         revInclude: JSON.stringify(searchReqObj.revInclude),
         sortRules: JSON.stringify(searchReqObj.sortRules),
         filters: searchReqObj.filters,
+        filtersCodes: searchReqObj.filters?.map((filter) => filter.code).sort() ?? [],
         status: res.statusCode,
         responseBody: JSON.parse(responseBody),
         requestBody: req.body,

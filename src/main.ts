@@ -16,6 +16,6 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     await app.listen(8080);
-    await initialValidateResource();
+    initialValidateResource();
 }
 bootstrap();

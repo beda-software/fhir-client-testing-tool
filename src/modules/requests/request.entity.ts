@@ -65,6 +65,9 @@ export class Request {
     @Column({ name: 'filters', type: 'jsonb', nullable: true })
     filters: jsonbType;
 
+    @Column({ name: 'filters_codes', type: 'text', array: true, nullable: true })
+    filtersCodes: string[];
+
     @Column({ name: 'status', type: 'smallint' })
     status: Response['statusCode'];
 

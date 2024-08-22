@@ -34,3 +34,23 @@ export async function getRequestsWithUnavailableSearchParams(
         .andWhere("request.filters->0->>'code' NOT IN (:...availableSearchParams)", { availableSearchParams })
         .getMany();
 }
+
+export async function getRequestsWithUnavailableComboSearchParams(
+    repository: Repository<Request>,
+    sessionId: string,
+    resourceType: string,
+    availableSearchParams: string[][],
+): Promise<Request[]> {
+    const result = await repository
+        .createQueryBuilder('request')
+        .where('request.sessionId = :sessionId', { sessionId })
+        .andWhere('request.resourceType = :resourceType', { resourceType })
+        .andWhere('request.fhirAction = :action', { action: 'SEARCH' })
+        .andWhere('jsonb_array_length(request.filters) > 1')
+        .andWhere('NOT request.filters_codes <@ :codes', {
+            codes: availableSearchParams,
+        })
+        .getMany();
+
+    return result;
+}
