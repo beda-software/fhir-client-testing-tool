@@ -7,6 +7,7 @@ import {
     getRequestsWithUnavailableSearchParams,
 } from './clientTestingHelpers';
 import { v4 as uuidv4 } from 'uuid';
+import { createRequestObject } from './data';
 
 const TestDataSource = new DataSource({
     type: 'postgres',
@@ -32,49 +33,30 @@ beforeAll(async () => {
         target: 'http://test.com',
     });
 
-    for (const requestData of [
-        { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: '_id', value: '123' }] },
-        { resourceType: 'Patient', fhirAction: 'SEARCH', filters: [{ code: 'family', value: '123' }] },
-        {
-            resourceType: 'Patient',
-            fhirAction: 'SEARCH',
-            filters: [
-                { code: 'family', value: '123' },
-                { code: 'gender', value: 'unknown' },
-            ],
-        },
-        {
-            resourceType: 'Patient',
-            fhirAction: 'SEARCH',
-            filters: [
-                { code: 'family', value: '123' },
-                { code: 'name', value: 'unknown' },
-            ],
-        },
-        {
-            resourceType: 'Patient',
-            fhirAction: 'SEARCH',
-            filters: [
-                { code: 'test', value: '123' },
-                { code: 'name', value: 'unknown' },
-            ],
-        },
-        { resourceType: 'Patent', fhirAction: 'CREATE' },
-        { resourceType: 'Observation', fhirAction: 'SEARCH' },
+    for (const searchParameters of [
+        '/Patient?_id=123',
+        '/Patient?family=123',
+        '/Patient?family=123&gender=unknown',
+        '/Patient?family=123&name=unknown',
+        '/Patient?test=123&gender=unknown',
+        '/Observation?_id=123',
     ]) {
-        await requestsRepository.save({
-            session: sessionEntity,
-            resourceType: requestData.resourceType,
-            fhirAction: requestData.fhirAction,
-            requestMethod: 'GET',
-            requestUri: '/Patient',
-            remoteAddr: 'undefined',
-            status: 200,
-            userAgent: 'Mozilla/5.0',
-            headers: {},
-            filters: requestData.filters,
-            filtersCodes: requestData.filters?.map((filter) => filter.code).sort() ?? [],
-        });
+        await requestsRepository.save(
+            createRequestObject(
+                sessionUUID,
+                'http://test.com',
+                sessionEntity,
+                {
+                    method: 'GET',
+                    headers: { 'user-agent': 'Mozilla/5.0' },
+                    body: {},
+                    originalUrl: `${sessionEntity.target}/sessions/${sessionUUID}/${searchParameters}`,
+                    ip: '192.168.0.1',
+                },
+                { statusCode: 200 },
+                '{}',
+            ),
+        );
     }
 });
 

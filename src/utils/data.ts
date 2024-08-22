@@ -8,8 +8,8 @@ export function createRequestObject(
     id: string,
     target: string,
     session: Session,
-    req: Request,
-    res: Response,
+    req: Pick<Request, 'ip' | 'method' | 'originalUrl' | 'headers' | 'body'>,
+    res: Pick<Response, 'statusCode'>,
     responseBody: string,
 ): CreateRequestDto {
     const searchRequest = req.originalUrl.replace(`/sessions/${id}`, target);

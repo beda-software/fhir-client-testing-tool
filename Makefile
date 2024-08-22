@@ -22,7 +22,7 @@ stop:
 	$(compose) $(dev_env) $(dev_profile) stop
 
 down:
-	$(compose) $(dev_env) $(dev_profile) down
+	$(compose) $(dev_env) $(dev_profile) down -v
 
 tests_build:
 	$(compose) $(tests_env) $(tests_profile) build
