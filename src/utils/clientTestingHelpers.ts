@@ -35,13 +35,30 @@ export async function getRequestsWithUnavailableSearchParams(
         .getMany();
 }
 
+/**
+ * Retrieves a list of requests with unavailable combination search parameters.
+ *
+ * @param repository - The repository to query requests from.
+ * @param sessionId - The session ID to filter requests by.
+ * @param resourceType - The resource type to filter requests by.
+ * @param availableSearchParams - The available search parameters.
+ * @returns A promise that resolves to an array of requests.
+ */
 export async function getRequestsWithUnavailableComboSearchParams(
     repository: Repository<Request>,
     sessionId: string,
     resourceType: string,
     availableSearchParams: string[][],
 ): Promise<Request[]> {
-    const result = await repository
+    // NOTE: SQL query example
+    // SELECT *
+    // FROM request
+    // WHERE sessionId = 123
+    //   AND resourceType = 'Patient'
+    //   AND fhirAction = 'SEARCH'
+    //   AND jsonb_array_length(filters) > 1
+    //   AND NOT filters_codes <@ array[array['birthdate','family'], array['birthdate','name']]
+    return await repository
         .createQueryBuilder('request')
         .where('request.sessionId = :sessionId', { sessionId })
         .andWhere('request.resourceType = :resourceType', { resourceType })
@@ -51,6 +68,4 @@ export async function getRequestsWithUnavailableComboSearchParams(
             codes: availableSearchParams,
         })
         .getMany();
-
-    return result;
 }
