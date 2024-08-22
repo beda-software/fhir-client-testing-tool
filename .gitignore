@@ -3,3 +3,4 @@
 .lsp/
 node_modules
 dist
+envs/*
