@@ -72,7 +72,7 @@ export class TestRunController {
         const testResults = testRun.testResults;
 
         res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Content-Disposition', 'attachment; filename="users.json"');
+        res.setHeader('Content-Disposition', `attachment; filename="${testRun.id}.json"`);
         res.send(testResults);
     }
 }
