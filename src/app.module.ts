@@ -4,6 +4,7 @@ import { RequestModule } from './modules/requests/request.module';
 import { SessionModule } from './modules/sessions/session.module';
 import { TestRunModule } from './modules/test_runs/testRun.module';
 import { ConfigModule } from '@nestjs/config';
+import { ProxyAppModule } from './modules/proxyapp/proxyapp.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
         SessionModule,
         RequestModule,
         TestRunModule,
+        ProxyAppModule,
     ],
 })
 export class AppModule {}
