@@ -1,14 +1,16 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { InitiateTestRunDto } from './testRun.dto';
 import { Response } from 'express';
 import { runCLI } from '@jest/core';
 import { TestRunService } from './testRun.service';
 import { SessionService } from '../sessions/session.service';
+import { TestRun } from './testRun.entity';
 
 @ApiTags('test-runs')
 @Controller('test-runs')
 export class TestRunController {
+    requestService: any;
     constructor(
         private readonly testRunService: TestRunService,
         private readonly sessionService: SessionService,
@@ -45,5 +47,32 @@ export class TestRunController {
         } catch (error) {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'Find a test run by ID' })
+    @ApiParam({ name: 'id', description: 'Test run ID' })
+    findOne(@Param('id') id: string): Promise<TestRun> {
+        return this.testRunService.findOne(id);
+    }
+
+    @Get(':id/report')
+    @ApiOperation({ summary: 'Find a test run by ID' })
+    @ApiParam({ name: 'id', description: 'Test run ID' })
+    async getReport(@Param('id') id: string) {
+        const testRun = await this.testRunService.findOne(id);
+        return testRun.testResults;
+    }
+
+    @Get(':id/report/download')
+    @ApiOperation({ summary: 'Find a test run by ID' })
+    @ApiParam({ name: 'id', description: 'Test run ID' })
+    async downloadReportFile(@Param('id') id: string, @Res() res: Response) {
+        const testRun = await this.testRunService.findOne(id);
+        const testResults = testRun.testResults;
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', 'attachment; filename="users.json"');
+        res.send(testResults);
     }
 }
