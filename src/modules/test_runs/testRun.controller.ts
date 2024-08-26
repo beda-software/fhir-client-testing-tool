@@ -32,6 +32,7 @@ export class TestRunController {
             globals: JSON.stringify({
                 SESSION_ID: sessionId,
             }),
+            maxWorkers: 1,
             // silent: true,
         };
 

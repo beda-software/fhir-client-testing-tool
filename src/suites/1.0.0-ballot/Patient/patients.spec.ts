@@ -1,11 +1,11 @@
 import { In, Not } from 'typeorm';
-import { Request } from '../../modules/requests/request.entity';
-import { isResourceValid } from '../../utils/services';
 import { Patient } from 'fhir/r4';
 import {
     getRequestsWithUnavailableComboSearchParams,
     getRequestsWithUnavailableSearchParams,
-} from '../../utils/clientTestingHelpers';
+} from '../../../utils/clientTestingHelpers';
+import { isResourceValid } from '../../../utils/services';
+import { Request } from '../../../modules/requests/request.entity';
 
 // function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
 //     const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
