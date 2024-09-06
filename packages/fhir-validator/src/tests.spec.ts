@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { validateResource } from './services';
-import { timeout } from 'rxjs';
+import { validateResource } from '.';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

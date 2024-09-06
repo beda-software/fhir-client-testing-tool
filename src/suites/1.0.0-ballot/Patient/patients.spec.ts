@@ -4,7 +4,7 @@ import {
     getRequestsWithUnavailableComboSearchParams,
     getRequestsWithUnavailableSearchParams,
 } from '../../../utils/clientTestingHelpers';
-import { isResourceValid } from '../../../utils/services';
+import { isResourceValid } from '@beda.software/fhir-validator';
 import { Request } from '../../../modules/requests/request.entity';
 
 // function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {

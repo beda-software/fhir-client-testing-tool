@@ -1,0 +1,11 @@
+{
+  "name": "@beda.software/fhir-validator",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "author": "",
+  "license": "MIT"
+}
