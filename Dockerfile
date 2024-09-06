@@ -4,10 +4,8 @@ RUN mkdir -p /app/src
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY . .
 
 RUN yarn install
-
-COPY . .
 
 EXPOSE 8080

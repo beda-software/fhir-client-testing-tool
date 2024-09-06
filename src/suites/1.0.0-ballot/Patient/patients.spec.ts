@@ -4,8 +4,8 @@ import {
     getRequestsWithUnavailableComboSearchParams,
     getRequestsWithUnavailableSearchParams,
 } from '../../../utils/clientTestingHelpers';
-import { isResourceValid } from '@beda.software/fhir-validator';
 import { Request } from '../../../modules/requests/request.entity';
+import { isResourceValid } from '@beda.software/fhir-validator';
 
 // function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
 //     const availableInteractions = ['READ', 'SEARCH', 'CREATE', 'UPDATE'];
