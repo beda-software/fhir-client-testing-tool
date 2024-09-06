@@ -1,0 +1,11 @@
+{
+  "name": "@beda.software/client-testing-proxy-helpers",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "tsc"
+  },
+  "author": "",
+  "license": "ISC"
+}

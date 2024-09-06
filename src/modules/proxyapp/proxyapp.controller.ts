@@ -1,7 +1,7 @@
 import { All, Controller, Param, Req, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { createRequestObject } from 'src/utils/data';
-import { captureResponseBody } from 'src/utils/responses';
+import { captureResponseBody } from '@beda.software/client-testing-proxy-helpers';
 import { RequestService } from '../requests/request.service';
 import { SessionService } from '../sessions/session.service';
 import { Request, Response } from 'express';
