@@ -1,4 +1,4 @@
-import { getFHIRAction } from './helpers';
+import { getFHIRAction } from '.';
 
 describe('getFHIRAction', () => {
     test.each([
