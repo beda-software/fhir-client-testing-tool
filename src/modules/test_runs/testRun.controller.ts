@@ -7,6 +7,15 @@ import { TestRunService } from './testRun.service';
 import { SessionService } from '../sessions/session.service';
 import { TestRun } from './testRun.entity';
 
+const testOptions = {
+    globalSetup: './src/utils/setup/jest.setup.ts',
+    globalTeardown: './src/utils/setup/jest.teardown.ts',
+    rootDir: './',
+    testEnvironment: 'node',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    maxWorkers: 1,
+};
+
 @ApiTags('test-runs')
 @Controller('test-runs')
 export class TestRunController {
@@ -14,7 +23,7 @@ export class TestRunController {
     constructor(
         private readonly testRunService: TestRunService,
         private readonly sessionService: SessionService,
-    ) {}
+    ) { }
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
@@ -23,17 +32,13 @@ export class TestRunController {
         const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
 
         const options = {
-            globalSetup: './src/utils/setup/jest.setup.ts',
-            globalTeardown: './src/utils/setup/jest.teardown.ts',
-            rootDir: './',
-            testEnvironment: 'node',
-            testRegex: testRegex,
-            moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-            globals: JSON.stringify({
-                SESSION_ID: sessionId,
-            }),
-            maxWorkers: 1,
-            // silent: true,
+            ...testOptions,
+            ...{
+                testRegex: testRegex,
+                globals: JSON.stringify({
+                    SESSION_ID: sessionId,
+                }),
+            },
         };
 
         try {
@@ -45,6 +50,31 @@ export class TestRunController {
                 testResults: results,
             });
             res.status(200).json({ testRun });
+        } catch (error) {
+            res.status(500).json({ message: 'Internal server error', error: error.message });
+        }
+    }
+
+    @Get('test-list')
+    @ApiOperation({ summary: 'List all tests' })
+    async list(@Res() res: Response) {
+        const testRegex = `/src/suites/.*\\.(test|spec)\\.[jt]sx?$`;
+
+        const options = {
+            ...testOptions,
+            ...{
+                testRegex: testRegex,
+                testList: true,
+            },
+        };
+
+        try {
+            const { results } = await runCLI(options as any, [process.cwd()]);
+            const suites = results.testResults.map((results) => ({
+                file: results.testFilePath,
+                tests: results.testResults.map((test) => test.fullName),
+            }));
+            res.status(200).json({ suites });
         } catch (error) {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
