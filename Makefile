@@ -32,3 +32,6 @@ tests_run:
 
 tests_down:
 	$(compose) $(tests_env) $(tests_profile) down -v
+
+develop_down:
+	$(compose) $(dev_env) $(dev_profile) down -v

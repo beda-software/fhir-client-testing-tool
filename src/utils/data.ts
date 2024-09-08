@@ -40,3 +40,33 @@ export function createRequestObject(
         requestBody: req.body,
     };
 }
+
+export function createTestListObject(testRun: any) {
+    const { results } = testRun;
+
+    const preparedResults = results.testResults.map((resultItem) => {
+        const testFilePath = resultItem.testFilePath;
+        const suiteId = testFilePath.split('/')?.[4];
+        const groupsRaw = resultItem.testResults.map((testItem) => {
+            return {
+                groupName: testItem.ancestorTitles[0],
+                testTitle: testItem.fullName,
+            };
+        });
+
+        const groupNames = [...new Set(groupsRaw.map((groupItem) => groupItem.groupName))];
+        const groups = groupNames.map((groupName) => {
+            return {
+                groupName: groupName,
+                tests: groupsRaw.filter((groupItem) => groupItem.groupName === groupName).map((a) => a.testTitle),
+            };
+        });
+
+        return {
+            suiteId: suiteId,
+            groups: groups,
+        };
+    });
+
+    return preparedResults;
+}

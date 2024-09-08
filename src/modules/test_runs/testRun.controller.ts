@@ -6,6 +6,7 @@ import { runCLI } from '@jest/core';
 import { TestRunService } from './testRun.service';
 import { SessionService } from '../sessions/session.service';
 import { TestRun } from './testRun.entity';
+import { createTestListObject } from 'src/utils/data';
 
 const testOptions = {
     globalSetup: './src/utils/setup/jest.setup.ts',
@@ -23,7 +24,7 @@ export class TestRunController {
     constructor(
         private readonly testRunService: TestRunService,
         private readonly sessionService: SessionService,
-    ) { }
+    ) {}
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
@@ -69,12 +70,8 @@ export class TestRunController {
         };
 
         try {
-            const { results } = await runCLI(options as any, [process.cwd()]);
-            const suites = results.testResults.map((results) => ({
-                file: results.testFilePath,
-                tests: results.testResults.map((test) => test.fullName),
-            }));
-            res.status(200).json({ suites });
+            const results = await runCLI(options as any, [process.cwd()]);
+            res.status(200).json({ suites: createTestListObject(results) });
         } catch (error) {
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
