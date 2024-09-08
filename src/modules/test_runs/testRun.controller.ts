@@ -29,8 +29,9 @@ export class TestRunController {
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
     async create(@Res() res: Response, @Body() createTestSessionDto: InitiateTestRunDto) {
-        const { suiteId, sessionId } = createTestSessionDto;
+        const { suiteId, sessionId, testId } = createTestSessionDto;
         const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
+        const optionsWithTest = testId ? { testNamePattern: testId } : {};
 
         const options = {
             ...testOptions,
@@ -40,6 +41,7 @@ export class TestRunController {
                     SESSION_ID: sessionId,
                 }),
             },
+            ...optionsWithTest,
         };
 
         try {
@@ -47,7 +49,7 @@ export class TestRunController {
             const currentSession = await this.sessionService.findOne(sessionId);
             const testRun = await this.testRunService.create({
                 session: currentSession,
-                suiteId,
+                suiteId: testId ? testId : suiteId,
                 testResults: results,
             });
             res.status(200).json({ testRun });

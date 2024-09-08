@@ -39,4 +39,11 @@ export class InitiateTestRunDto {
         type: String,
     })
     suiteId: string;
+
+    @ApiProperty({
+        example: 'Patients test Should only have available interactions',
+        description: 'Run specific test',
+        type: String,
+    })
+    testId: string;
 }
