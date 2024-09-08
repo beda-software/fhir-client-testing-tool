@@ -6,8 +6,8 @@ import { RequestService } from '../requests/request.service';
 import { SessionService } from '../sessions/session.service';
 import { Request, Response } from 'express';
 
-@ApiTags('app')
-@Controller('app')
+@ApiTags('proxy')
+@Controller('proxy')
 export class ProxyAppController {
     // eslint-disable-next-line @typescript-eslint/ban-types
     private sessionListeners = new Map<string, Function>();

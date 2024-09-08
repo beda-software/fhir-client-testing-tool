@@ -42,7 +42,7 @@ export class SessionService {
         return createProxyMiddleware({
             target,
             changeOrigin: true,
-            pathRewrite: { [`^/app/${id}`]: '' },
+            pathRewrite: { [`^/proxy/${id}`]: '' },
             on: {
                 proxyReq: fixRequestBody,
             },

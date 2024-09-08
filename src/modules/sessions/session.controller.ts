@@ -19,7 +19,7 @@ export class SessionController {
         const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
         const sessionEntity = await this.sessionService.create(createSessionDto);
 
-        return { ...sessionEntity, baseUrl: `${backendUrl}/app/${sessionEntity.id}` };
+        return { ...sessionEntity, baseUrl: `${backendUrl}/proxy/${sessionEntity.id}` };
     }
 
     @Get(':id')

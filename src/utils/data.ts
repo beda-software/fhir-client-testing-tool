@@ -12,7 +12,7 @@ export function createRequestObject(
     res: Pick<Response, 'statusCode'>,
     responseBody: string,
 ): CreateRequestDto {
-    const searchRequest = req.originalUrl.replace(`/app/${id}`, target);
+    const searchRequest = req.originalUrl.replace(`/proxy/${id}`, target);
     const searchReqObj = parseSearchRequest(searchRequest);
     return {
         session: session,
