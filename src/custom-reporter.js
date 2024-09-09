@@ -2,20 +2,18 @@ class CustomReporter {
     constructor(globalConfig, options) {
         this._globalConfig = globalConfig;
         this._options = options;
-        this.totalTests = 0;
-        this.testCount = 0;
+        this.totalSuites = 0;
+        this.suitesCount = 0;
     }
 
-    onRunStart(test, testSuiteResults) {
-        testSuiteResults.testResults.forEach((suite) => {
-            this.totalTests += suite.numPassingTests + suite.numFailingTests + suite.numPendingTests;
-        });
-        console.log(`Total tests found: ${this.totalTests}`);
+    onRunStart(test) {
+        this.totalSuites = test.numTotalTestSuites;
+        console.log('Total test suites:', this.totalSuites);
     }
 
-    onTestResult(test, testResult, aggregatedResult) {
-        this.testCount += testResult.numPassingTests + testResult.numFailingTests + testResult.numPendingTests;
-        console.log(`Progress: ${this.testCount}/${this.totalTests}`);
+    onTestResult() {
+        this.suitesCount += 1;
+        console.log(`Progress: ${this.suitesCount}/${this.totalSuites}`);
     }
 }
 

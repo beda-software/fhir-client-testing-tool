@@ -40,8 +40,7 @@ export class TestRunController {
                 globals: JSON.stringify({
                     SESSION_ID: sessionId,
                 }),
-                reporters: ['default', '<rootDir>/src/custom-reporter.js'],
-                // reporters: ['default', 'jest-progress-bar-reporter'],
+                reporters: ['default', ['<rootDir>/src/custom-reporter.js', { SESSION_ID: sessionId }]],
             },
             ...optionsWithTest,
         };
