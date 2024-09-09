@@ -16,6 +16,10 @@ export class TestRunService {
         return this.testRunRepository.save(testRun);
     }
 
+    async update(testRun: TestRun): Promise<TestRun> {
+        return this.testRunRepository.save(testRun);
+    }
+
     async findAll(params: any): Promise<TestRun[]> {
         return this.testRunRepository.find(params);
     }

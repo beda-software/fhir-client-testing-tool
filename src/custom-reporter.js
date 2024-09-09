@@ -4,16 +4,29 @@ class CustomReporter {
         this._options = options;
         this.totalSuites = 0;
         this.suitesCount = 0;
+        this.testRunId = this._options.TEST_RUN_ID;
+        this.testRunService = this._options.TEST_RUN_SERVICE;
     }
 
-    onRunStart(test) {
+    async onRunStart(test) {
         this.totalSuites = test.numTotalTestSuites;
-        console.log('Total test suites:', this.totalSuites);
+        const testRun = await this.testRunService.findOne(this.testRunId);
+        await this.testRunService.update({ ...testRun, ...{ suiteTotal: this.totalSuites, status: 'running' } });
     }
 
-    onTestResult() {
+    onTestStart() {
+        // Just for the info;
+    }
+
+    async onTestResult() {
         this.suitesCount += 1;
-        console.log(`Progress: ${this.suitesCount}/${this.totalSuites}`);
+        const testRun = await this.testRunService.findOne(this.testRunId);
+        await this.testRunService.update({ ...testRun, ...{ suitePassed: this.suitesCount } });
+    }
+
+    async onRunComplete() {
+        const testRun = await this.testRunService.findOne(this.testRunId);
+        await this.testRunService.update({ ...testRun, ...{ status: 'completed' } });
     }
 }
 
