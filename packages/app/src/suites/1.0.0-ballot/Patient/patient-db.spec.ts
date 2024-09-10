@@ -1,1 +1,3 @@
-../../../../../client-testing-demo-tests-db/src/index.ts
+import { patientDemoTestDB } from '@beda.software/client-testing-demo-tests-db';
+
+patientDemoTestDB();

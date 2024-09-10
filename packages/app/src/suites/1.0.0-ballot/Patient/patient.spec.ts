@@ -1,1 +1,3 @@
-../../../../../client-testing-demo-tests-standard/src/index.ts
+import { patientDemoTest } from '@beda.software/client-testing-demo-tests-standard';
+
+patientDemoTest();
