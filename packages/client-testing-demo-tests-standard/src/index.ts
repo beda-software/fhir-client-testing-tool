@@ -1,5 +1,5 @@
 import { Patient } from 'fhir/r4';
-import { Request } from '../../../modules/requests/request.entity';
+import { Request } from '@beda.software/app/src/modules/requests/request.entity';
 import { isResourceValid } from '@beda.software/fhir-validator';
 
 function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
@@ -81,3 +81,4 @@ describe('Patients test (2nd version)', () => {
         ).toBe(true);
     });
 });
+

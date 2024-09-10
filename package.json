@@ -9,7 +9,9 @@
     "packages/client-testing-helpers",
     "packages/client-testing-proxy-helpers",
     "packages/fhir-validator",
-    "packages/app"
+    "packages/app",
+    "packages/client-testing-demo-tests-standard",
+    "packages/client-testing-demo-tests-db"
   ],
   "scripts": {
     "build": "nest build",

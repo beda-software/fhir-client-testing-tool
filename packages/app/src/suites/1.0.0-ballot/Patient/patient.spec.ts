@@ -1,0 +1,1 @@
+../../../../../client-testing-demo-tests-standard/src/index.ts

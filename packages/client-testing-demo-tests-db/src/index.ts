@@ -3,8 +3,8 @@ import { Patient } from 'fhir/r4';
 import {
     getRequestsWithUnavailableComboSearchParams,
     getRequestsWithUnavailableSearchParams,
-} from '../../../utils/clientTestingHelpers';
-import { Request } from '../../../modules/requests/request.entity';
+} from '@beda.software/app/src//utils/clientTestingHelpers';
+import { Request } from '@beda.software/app/src/modules/requests/request.entity';
 import { isResourceValid } from '@beda.software/fhir-validator';
 
 async function patientRequestCreateValidPatient(requests: Request[]): Promise<boolean> {
@@ -72,3 +72,4 @@ describe('Patients test', () => {
         ).toBe(true);
     });
 });
+
