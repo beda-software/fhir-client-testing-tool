@@ -33,6 +33,12 @@ export class TestRunController {
         const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
         const optionsWithTest = testId ? { testNamePattern: testId } : {};
 
+        const currentSession = await this.sessionService.findOne(sessionId);
+        const testRun = await this.testRunService.create({
+            session: currentSession,
+            suiteId: testId ? testId : suiteId,
+        });
+
         const options = {
             ...testOptions,
             ...{
@@ -40,20 +46,34 @@ export class TestRunController {
                 globals: JSON.stringify({
                     SESSION_ID: sessionId,
                 }),
+                reporters: [
+                    'default',
+                    [
+                        '<rootDir>/src/custom-reporter.js',
+                        {
+                            TEST_RUN_ID: testRun.id,
+                            TEST_RUN_SERVICE: this.testRunService,
+                        },
+                    ],
+                ],
             },
             ...optionsWithTest,
         };
 
         try {
             const { results } = await runCLI(options as any, [process.cwd()]);
-            const currentSession = await this.sessionService.findOne(sessionId);
-            const testRun = await this.testRunService.create({
-                session: currentSession,
-                suiteId: testId ? testId : suiteId,
-                testResults: results,
+            const testRunAfterTests = await this.testRunService.findOne(testRun.id);
+            const finalTestRun = await this.testRunService.update({
+                ...testRunAfterTests,
+                ...{ testResults: results },
             });
-            res.status(200).json({ testRun });
+            res.status(200).json({ finalTestRun });
         } catch (error) {
+            const failedTestRun = await this.testRunService.findOne(testRun.id);
+            await this.testRunService.update({
+                ...failedTestRun,
+                ...{ status: 'failed' },
+            });
             res.status(500).json({ message: 'Internal server error', error: error.message });
         }
     }

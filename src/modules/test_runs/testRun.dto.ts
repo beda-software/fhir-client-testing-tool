@@ -22,7 +22,7 @@ export class CreateTestRunDto {
         description: 'Run specific test suite',
         type: json,
     })
-    testResults: jsonbType;
+    testResults?: jsonbType;
 }
 
 export class InitiateTestRunDto {
