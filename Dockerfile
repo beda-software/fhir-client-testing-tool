@@ -8,4 +8,6 @@ COPY . .
 
 RUN yarn install
 
+WORKDIR /app/packages/app
+
 EXPOSE 8080

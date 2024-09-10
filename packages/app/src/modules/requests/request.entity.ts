@@ -1,7 +1,7 @@
 import { Response, Request as RequestType } from 'express';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { Session } from '../sessions/session.entity';
-import { jsonbType } from 'src/utils/types';
+import { jsonbType } from '../../utils/types';
 
 @Entity()
 export class Request {

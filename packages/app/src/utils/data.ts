@@ -1,7 +1,7 @@
 import { parseSearchRequest } from '@medplum/core';
 import { Request, Response } from 'express';
-import { CreateRequestDto } from 'src/modules/requests/request.dto';
-import { Session } from 'src/modules/sessions/session.entity';
+import { CreateRequestDto } from '../modules/requests/request.dto';
+import { Session } from '../modules/sessions/session.entity';
 import { getFHIRAction } from '@beda.software/client-testing-helpers';
 
 export function createRequestObject(
