@@ -1,4 +1,4 @@
-import { Request } from 'src/modules/requests/request.entity';
+import { Request } from '../modules/requests/request.entity';
 import { Repository } from 'typeorm';
 
 /**

@@ -13,7 +13,7 @@ pull:
 	$(compose) $(dev_env) $(dev_profile) pull
 
 build:
-	$(compose) $(dev_env) $(dev_profile) build
+	$(compose) $(dev_env) $(dev_profile) build --no-cache
 
 up:
 	$(compose) $(dev_env) $(dev_profile) up

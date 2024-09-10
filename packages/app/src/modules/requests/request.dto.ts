@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Request as RequestType, Response } from 'express';
 import { Session } from '../sessions/session.entity';
-import { jsonbType } from 'src/utils/types';
+import { jsonbType } from '../../utils/types';
 
 export class CreateRequestDto {
     @ApiProperty({ description: 'Session associated with the request' })

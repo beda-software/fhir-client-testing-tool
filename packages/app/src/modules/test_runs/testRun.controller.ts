@@ -6,7 +6,7 @@ import { runCLI } from '@jest/core';
 import { TestRunService } from './testRun.service';
 import { SessionService } from '../sessions/session.service';
 import { TestRun } from './testRun.entity';
-import { createTestListObject } from 'src/utils/data';
+import { createTestListObject } from '../../utils/data';
 
 const testOptions = {
     globalSetup: './src/utils/setup/jest.setup.ts',

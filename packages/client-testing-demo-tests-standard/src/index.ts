@@ -1,5 +1,5 @@
 import { Patient } from 'fhir/r4';
-import { Request } from '../../../modules/requests/request.entity';
+import { Request } from '@beda.software/app/src/modules/requests/request.entity';
 import { isResourceValid } from '@beda.software/fhir-validator';
 
 function patientRequestsOnlyAvailableInteractionsExists(requests: Request[]): boolean {
@@ -53,31 +53,33 @@ async function patientRequestCreateValidPatient(requests: Request[]): Promise<bo
     return falseValidations.length === 0;
 }
 
-describe('Patients test (2nd version)', () => {
-    let requests: Request[];
+export function patientDemoTest() {
+    describe('Patients test (2nd version)', () => {
+        let requests: Request[];
 
-    beforeAll(async () => {
-        requests = await global.RequestsRepository.find({
-            where: { session: { id: global.SESSION_ID }, resourceType: 'Patient' },
-            relations: ['session'],
+        beforeAll(async () => {
+            requests = await global.RequestsRepository.find({
+                where: { session: { id: global.SESSION_ID }, resourceType: 'Patient' },
+                relations: ['session'],
+            });
+        });
+
+        test('Should only have available interactions', async () => {
+            expect(patientRequestsOnlyAvailableInteractionsExists(requests)).toBe(true);
+        });
+
+        test('Should only have available search params', async () => {
+            expect(patientRequestsOnlyAvailableSearchParamsExists(requests)).toBe(true);
+        });
+
+        test('Should only have available combo search params', async () => {
+            expect(patientRequestsOnlyAvailableComboSearchParamsExists(requests)).toBe(true);
+        });
+
+        test('Should only have valid resources in CREATE action', async () => {
+            expect(
+                await patientRequestCreateValidPatient(requests.filter((request) => request.fhirAction === 'CREATE')),
+            ).toBe(true);
         });
     });
-
-    test('Should only have available interactions', async () => {
-        expect(patientRequestsOnlyAvailableInteractionsExists(requests)).toBe(true);
-    });
-
-    test('Should only have available search params', async () => {
-        expect(patientRequestsOnlyAvailableSearchParamsExists(requests)).toBe(true);
-    });
-
-    test('Should only have available combo search params', async () => {
-        expect(patientRequestsOnlyAvailableComboSearchParamsExists(requests)).toBe(true);
-    });
-
-    test('Should only have valid resources in CREATE action', async () => {
-        expect(
-            await patientRequestCreateValidPatient(requests.filter((request) => request.fhirAction === 'CREATE')),
-        ).toBe(true);
-    });
-});
+}

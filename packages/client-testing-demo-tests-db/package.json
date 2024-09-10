@@ -1,11 +1,11 @@
 {
-  "name": "@beda.software/client-testing-helpers",
+  "name": "@beda.software/client-testing-demo-tests-db",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "tsc"
+    "prepare": "tsc || true"
   },
   "author": "",
-  "license": "MIT"
+  "license": "ISC"
 }

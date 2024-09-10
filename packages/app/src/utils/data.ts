@@ -1,8 +1,41 @@
 import { parseSearchRequest } from '@medplum/core';
 import { Request, Response } from 'express';
-import { CreateRequestDto } from 'src/modules/requests/request.dto';
-import { Session } from 'src/modules/sessions/session.entity';
-import { getFHIRAction } from '@beda.software/client-testing-helpers';
+import { CreateRequestDto } from '../modules/requests/request.dto';
+import { Session } from '../modules/sessions/session.entity';
+
+export function getFHIRAction(requestType: Request['method'], url: Request['url']) {
+    const mapSimpleRequest = {
+        DELETE: 'DELETE',
+        PATCH: 'PATCH',
+        PUT: 'UPDATE',
+    };
+
+    if (Object.keys(mapSimpleRequest).includes(requestType)) {
+        return mapSimpleRequest[requestType];
+    }
+
+    if (requestType === 'POST') {
+        if (url.includes('_search')) {
+            return 'SEARCH';
+        }
+        return 'CREATE';
+    }
+
+    if (requestType === 'GET') {
+        if (url.includes('_history')) {
+            if (url.match(/\/_history\/\d+$/)) {
+                return 'VREAD';
+            }
+            return 'HISTORY';
+        }
+
+        if (url.includes('?')) {
+            return 'SEARCH';
+        }
+
+        return 'READ';
+    }
+}
 
 export function createRequestObject(
     id: string,

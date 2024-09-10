@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Session } from '../sessions/session.entity';
-import { jsonbType } from 'src/utils/types';
+import { jsonbType } from '../../utils/types';
 
 export enum TestRunStatus {
     NOT_STARTED = 'not-started',

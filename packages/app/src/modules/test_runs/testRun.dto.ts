@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { json } from 'node:stream/consumers';
-import { jsonbType } from 'src/utils/types';
+import { jsonbType } from '../../utils/types';
 import { Session } from '../sessions/session.entity';
 
 export class CreateTestRunDto {
