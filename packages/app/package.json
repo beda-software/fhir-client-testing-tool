@@ -40,9 +40,7 @@
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20",
-    "@beda.software/client-testing-helpers": "0.0.1",
-    "@beda.software/fhir-validator": "0.0.1",
-    "@beda.software/client-testing-proxy-helpers": "0.0.1"
+    "@beda.software/fhir-validator": "0.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

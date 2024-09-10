@@ -6,8 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "workspaces": [
-    "packages/client-testing-helpers",
-    "packages/client-testing-proxy-helpers",
     "packages/fhir-validator",
     "packages/client-testing-demo-tests-standard",
     "packages/client-testing-demo-tests-db",
