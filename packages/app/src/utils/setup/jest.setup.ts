@@ -20,4 +20,7 @@ module.exports = async () => {
     const requestsRepository = TestDataSource.getRepository(Request);
     global.RequestsRepository = requestsRepository;
     global.TestDataSource = TestDataSource;
+    global.requests = await requestsRepository.find({
+        relations: ['session'],
+    });
 };

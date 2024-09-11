@@ -2,26 +2,11 @@ import { Patient } from 'fhir/r4';
 import { Request } from '@beda.software/app/src/modules/requests/request.entity';
 import { isResourceValid } from '@beda.software/fhir-validator';
 
-function checkAvailableParams(availableParams: string[], combo: boolean, requests: Request[]): boolean {
-    const filterCombo = (param: string) => (combo ? param.includes('+') : !param.includes('+'));
-    const usedComboSearchParams = requests
-        .flatMap((request) => request.filters.map((filter) => filter.code))
-        .filter((param) => filterCombo(param));
-
-    const uniqueUsedComboSearchParams = [...new Set(usedComboSearchParams)];
-
-    return uniqueUsedComboSearchParams.every((searchParam) => availableParams.includes(searchParam));
-}
-
 export function patientDemoTest() {
     describe('Patients test (2nd version)', () => {
-        let requests: Request[];
-
+        let requests: Request[] = [];
         beforeAll(async () => {
-            requests = await global.RequestsRepository.find({
-                where: { session: { id: global.SESSION_ID }, resourceType: 'Patient' },
-                relations: ['session'],
-            });
+            requests = global.requests.filter((request) => request.resourceType === 'Patient' && request.session.id === global.SESSION_ID);
         });
 
         test('Should only have available interactions', async () => {
@@ -32,7 +17,7 @@ export function patientDemoTest() {
         });
 
         test('Should only have available search params', async () => {
-            const availableSearchParams = [
+            const availableSearchParams = new Set([
                 '_id',
                 'birthdate',
                 'family',
@@ -41,15 +26,21 @@ export function patientDemoTest() {
                 'name',
                 'gender-identity',
                 'indigenous-status',
-            ];
+            ]);
+            const filteredRequests = new Set(
+                requests
+                    .filter((request) => request.filtersCodes.length === 1)
+                    .map((request) => request.filtersCodes[0]),
+            );
 
-            expect(checkAvailableParams(availableSearchParams, false, requests)).toBe(true);
+            expect(filteredRequests.isSubsetOf(availableSearchParams)).toBe(true);
         });
 
         test('Should only have available combo search params', async () => {
-            const availableComboSearchParams = ['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender'];
+            const availableComboSearchParams = new Set(['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender']);
+            const filteredRequests = new Set(requests.filter((request) => request.filtersCodes.length > 1).map((request) => request.filtersCodes.join('+')));
 
-            expect(checkAvailableParams(availableComboSearchParams, true, requests)).toBe(true);
+            expect(filteredRequests.isSubsetOf(availableComboSearchParams)).toBe(true);
         });
 
         test('Should only have valid resources in CREATE action', async () => {

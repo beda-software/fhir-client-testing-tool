@@ -24,8 +24,7 @@ export function patientDemoTestDB() {
             //   AND jsonb_array_length(filters) = 1
             //   AND filters->0->>'code' NOT IN ('_id', 'family')
 
-            const requests = await global.RequestsRepository
-                .createQueryBuilder('request')
+            const requests = await global.RequestsRepository.createQueryBuilder('request')
                 .where('request.sessionId = :sessionId', { sessionId: global.SESSION_ID })
                 .andWhere('request.resourceType = :resourceType', { resourceType: 'Patient' })
                 .andWhere('request.fhirAction = :action', { action: 'SEARCH' })
@@ -45,8 +44,7 @@ export function patientDemoTestDB() {
             //   AND fhirAction = 'SEARCH'
             //   AND jsonb_array_length(filters) > 1
             //   AND NOT filters_codes <@ array[array['birthdate','family'], array['birthdate','name']]
-            const requests = await global.RequestsRepository
-                .createQueryBuilder('request')
+            const requests = await global.RequestsRepository.createQueryBuilder('request')
                 .where('request.sessionId = :sessionId', { sessionId: global.SESSION_ID })
                 .andWhere('request.resourceType = :resourceType', { resourceType: 'Patient' })
                 .andWhere('request.fhirAction = :action', { action: 'SEARCH' })
