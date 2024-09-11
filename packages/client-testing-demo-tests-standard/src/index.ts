@@ -6,7 +6,9 @@ export function patientDemoTest() {
     describe('Patients test (2nd version)', () => {
         let requests: Request[] = [];
         beforeAll(async () => {
-            requests = global.requests.filter((request) => request.resourceType === 'Patient' && request.session.id === global.SESSION_ID);
+            requests = global.requests.filter(
+                (request) => request.resourceType === 'Patient' && request.session.id === global.SESSION_ID,
+            );
         });
 
         test('Should only have available interactions', async () => {
@@ -37,8 +39,17 @@ export function patientDemoTest() {
         });
 
         test('Should only have available combo search params', async () => {
-            const availableComboSearchParams = new Set(['birthdate+family', 'birthdate+name', 'gender+name', 'family+gender']);
-            const filteredRequests = new Set(requests.filter((request) => request.filtersCodes.length > 1).map((request) => request.filtersCodes.join('+')));
+            const availableComboSearchParams = new Set([
+                'birthdate+family',
+                'birthdate+name',
+                'gender+name',
+                'family+gender',
+            ]);
+            const filteredRequests = new Set(
+                requests
+                    .filter((request) => request.filtersCodes.length > 1)
+                    .map((request) => request.filtersCodes.join('+')),
+            );
 
             expect(filteredRequests.isSubsetOf(availableComboSearchParams)).toBe(true);
         });
@@ -48,7 +59,7 @@ export function patientDemoTest() {
                 (request) => request.fhirAction === 'CREATE' && request.requestBody?.resourceType === 'Patient',
             );
             const validationStatuses = await Promise.all(
-                filteredRequests.map(async (request) => await isResourceValid(request.requestBody as Patient)),
+                filteredRequests.map(async (request) => await isResourceValid(request.requestBody)),
             );
             const falseValidations = validationStatuses.filter((status) => status === false);
 

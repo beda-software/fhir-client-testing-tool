@@ -44,10 +44,15 @@ export async function validateResource(ig: string, version: string, txServer: st
     return response.data;
 }
 
-export async function isResourceValid(resource: FhirResource): Promise<boolean> {
+export async function isResourceValid(data?: FhirResource | any): Promise<boolean> {
+    if (data?.resourceType) {
+        console.error('Only FHIR resources can be validated');
+        return false;
+    }
+
     const { IG, IG_VERSION, TX_SERVER, VALIDATOR_SENSITIVITY } = getValidatorEnvs();
     try {
-        const result = await validateResource(IG, IG_VERSION, TX_SERVER, JSON.stringify(resource));
+        const result = await validateResource(IG, IG_VERSION, TX_SERVER, JSON.stringify(data));
         return result.outcomes?.[0]?.issues.filter((issue) => VALIDATOR_SENSITIVITY.includes(issue.level)).length === 0;
     } catch (error) {
         console.error('Error validating resource', error);
