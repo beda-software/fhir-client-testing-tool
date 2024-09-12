@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "workspaces": [
     "packages/fhir-validator",
-    "packages/client-testing-demo-tests-standard",
-    "packages/client-testing-demo-tests-db",
+    "packages/test-suites-js",
+    "packages/test-suites-db",
     "packages/app"
   ],
   "scripts": {

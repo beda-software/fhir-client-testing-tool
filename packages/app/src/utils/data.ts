@@ -79,7 +79,7 @@ export function createTestListObject(testRun: any) {
 
     const preparedResults = results.testResults.map((resultItem) => {
         const testFilePath = resultItem.testFilePath;
-        const suiteId = testFilePath.split('/')?.[4];
+        const suiteId = testFilePath.split('/')?.[3];
         const groupsRaw = resultItem.testResults.map((testItem) => {
             return {
                 groupName: testItem.ancestorTitles[0],

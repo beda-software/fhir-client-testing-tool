@@ -137,7 +137,7 @@ describe('Data utilities', () => {
 
         expect(createTestListObject(testRunResult)).toEqual([
             {
-                suiteId: '1.0.0-ballot',
+                suiteId: 'suites',
                 groups: [
                     {
                         groupName: 'Patients test',

@@ -24,7 +24,7 @@ export class TestRunController {
     constructor(
         private readonly testRunService: TestRunService,
         private readonly sessionService: SessionService,
-    ) {}
+    ) { }
 
     @Post()
     @ApiOperation({ summary: 'Create a new test session' })
@@ -82,13 +82,14 @@ export class TestRunController {
     @Get('test-list')
     @ApiOperation({ summary: 'List all tests' })
     async list(@Res() res: Response) {
-        const testRegex = `./.*\\.(test|spec)\\.[jt]sx?$`;
+        const testRegex = `test-suites-.*/.*\\.(test|spec)\\.[jt]sx?$`;
 
         const options = {
             ...testOptions,
             ...{
                 testRegex: testRegex,
                 testList: true,
+                testPathIgnorePatterns: ['/node_modules/', '/dist/']
             },
         };
 

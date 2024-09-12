@@ -1,5 +1,5 @@
 {
-  "name": "@beda.software/client-testing-demo-tests-standard",
+  "name": "@beda.software/test-suites-db",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
