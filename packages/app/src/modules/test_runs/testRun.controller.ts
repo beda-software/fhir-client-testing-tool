@@ -9,9 +9,9 @@ import { TestRun } from './testRun.entity';
 import { createTestListObject } from '../../utils/data';
 
 const testOptions = {
-    globalSetup: './src/utils/setup/jest.setup.ts',
-    globalTeardown: './src/utils/setup/jest.teardown.ts',
-    rootDir: './',
+    globalSetup: './app/src/utils/setup/jest.setup.ts',
+    globalTeardown: './app/src/utils/setup/jest.teardown.ts',
+    rootDir: '../',
     testEnvironment: 'node',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     maxWorkers: 1,
@@ -30,7 +30,8 @@ export class TestRunController {
     @ApiOperation({ summary: 'Create a new test session' })
     async create(@Res() res: Response, @Body() createTestSessionDto: InitiateTestRunDto) {
         const { suiteId, sessionId, testId } = createTestSessionDto;
-        const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
+        // const testRegex = `/src/suites/${suiteId}/.*\\.(test|spec)\\.[jt]sx?$`;
+        const testRegex = `./${suiteId}/src/.*\\.spec\\.ts$`;
         const optionsWithTest = testId ? { testNamePattern: testId } : {};
 
         const currentSession = await this.sessionService.findOne(sessionId);
@@ -49,7 +50,7 @@ export class TestRunController {
                 reporters: [
                     'default',
                     [
-                        '<rootDir>/src/custom-reporter.js',
+                        '<rootDir>/app/src/custom-reporter.js',
                         {
                             TEST_RUN_ID: testRun.id,
                             TEST_RUN_SERVICE: this.testRunService,
@@ -81,7 +82,7 @@ export class TestRunController {
     @Get('test-list')
     @ApiOperation({ summary: 'List all tests' })
     async list(@Res() res: Response) {
-        const testRegex = `/src/suites/.*\\.(test|spec)\\.[jt]sx?$`;
+        const testRegex = `./.*\\.(test|spec)\\.[jt]sx?$`;
 
         const options = {
             ...testOptions,
