@@ -1,6 +1,21 @@
-import { Patient } from 'fhir/r4';
 import { Request } from '@beda.software/app/src/modules/requests/request.entity';
 import { isResourceValid } from '@beda.software/fhir-validator';
+
+/**
+ * Temporary function to check if a set is a subset of another set
+ */
+function isSubsetOf<T>(setA: Set<T>, setB: Set<T>): boolean {
+    if (setA.size > setB.size) {
+        return false;
+    }
+
+    for (const elem of setA) {
+        if (!setB.has(elem)) {
+            return false;
+        }
+    }
+    return true;
+}
 
 export function patientDemoTest() {
     describe('Patients test (2nd version)', () => {
@@ -35,7 +50,7 @@ export function patientDemoTest() {
                     .map((request) => request.filtersCodes[0]),
             );
 
-            expect(filteredRequests.isSubsetOf(availableSearchParams)).toBe(true);
+            expect(isSubsetOf(filteredRequests, availableSearchParams)).toBe(true);
         });
 
         test('Should only have available combo search params', async () => {
@@ -51,7 +66,7 @@ export function patientDemoTest() {
                     .map((request) => request.filtersCodes.join('+')),
             );
 
-            expect(filteredRequests.isSubsetOf(availableComboSearchParams)).toBe(true);
+            expect(isSubsetOf(filteredRequests, availableComboSearchParams)).toBe(true);
         });
 
         test('Should only have valid resources in CREATE action', async () => {
